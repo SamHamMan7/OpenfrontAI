@@ -1,0 +1,426 @@
+{
+  "version": "v0.0.2",
+  "gitCommit": "2984bec4d1b66db9d07fbe983ea8d961690389c8",
+  "domain": "openfront.io",
+  "subdomain": "green",
+  "info": {
+    "gameID": "9gBUpXJ5",
+    "config": {
+      "gameMap": "Australia",
+      "difficulty": "Easy",
+      "donateGold": false,
+      "donateTroops": false,
+      "gameType": "Public",
+      "gameMode": "Free For All",
+      "rankedType": "1v1",
+      "gameMapSize": "Compact",
+      "disableNations": true,
+      "bots": 100,
+      "infiniteGold": false,
+      "infiniteTroops": false,
+      "instantBuild": false,
+      "randomSpawn": false,
+      "maxPlayers": 2,
+      "maxTimerValue": 10,
+      "spawnImmunityDuration": 300,
+      "disabledUnits": []
+    },
+    "players": [
+      {
+        "stats": {
+          "gold": [
+            "900"
+          ]
+        },
+        "clientID": "K1gDRHG4",
+        "username": "[ILOST] DTG discord darta6",
+        "clanTag": "ILOST",
+        "cosmetics": {},
+        "persistentID": null
+      }
+    ],
+    "lobbyCreatedAt": 1769563571793,
+    "start": 1769563578793,
+    "end": 1769563610016,
+    "duration": 31,
+    "num_turns": 311,
+    "winner": [
+      "player",
+      "K1gDRHG4"
+    ],
+    "lobbyFillTime": 7000
+  },
+  "turns": [
+    {
+      "turnNumber": 0,
+      "intents": [
+        {
+          "type": "mark_disconnected",
+          "clientID": "K1gDRHG4",
+          "isDisconnected": false
+        }
+      ]
+    },
+    {
+      "turnNumber": 20,
+      "intents": [],
+      "hash": 1070354246443220
+    },
+    {
+      "turnNumber": 27,
+      "intents": [
+        {
+          "type": "mark_disconnected",
+          "clientID": "3dTqeLUw",
+          "isDisconnected": false
+        }
+      ]
+    },
+    {
+      "turnNumber": 30,
+      "intents": [],
+      "hash": 1070354246443220
+    },
+    {
+      "turnNumber": 40,
+      "intents": [],
+      "hash": 1070354246443220
+    },
+    {
+      "turnNumber": 50,
+      "intents": [],
+      "hash": 1070354246443220
+    },
+    {
+      "turnNumber": 55,
+      "intents": [
+        {
+          "clientID": "3dTqeLUw",
+          "type": "spawn",
+          "tile": 360613
+        }
+      ]
+    },
+    {
+      "turnNumber": 60,
+      "intents": [],
+      "hash": 1070354246443220
+    },
+    {
+      "turnNumber": 68,
+      "intents": [
+        {
+          "clientID": "3dTqeLUw",
+          "type": "spawn",
+          "tile": 360615
+        }
+      ]
+    },
+    {
+      "turnNumber": 70,
+      "intents": [
+        {
+          "clientID": "3dTqeLUw",
+          "type": "spawn",
+          "tile": 360615
+        }
+      ],
+      "hash": 1070354246443220
+    },
+    {
+      "turnNumber": 72,
+      "intents": [
+        {
+          "clientID": "3dTqeLUw",
+          "type": "spawn",
+          "tile": 360615
+        }
+      ]
+    },
+    {
+      "turnNumber": 73,
+      "intents": [
+        {
+          "clientID": "3dTqeLUw",
+          "type": "spawn",
+          "tile": 360615
+        }
+      ]
+    },
+    {
+      "turnNumber": 80,
+      "intents": [],
+      "hash": 1070354246443220
+    },
+    {
+      "turnNumber": 82,
+      "intents": [
+        {
+          "clientID": "3dTqeLUw",
+          "type": "spawn",
+          "tile": 363602
+        }
+      ]
+    },
+    {
+      "turnNumber": 83,
+      "intents": [
+        {
+          "clientID": "3dTqeLUw",
+          "type": "spawn",
+          "tile": 363602
+        }
+      ]
+    },
+    {
+      "turnNumber": 141,
+      "intents": [
+        {
+          "clientID": "K1gDRHG4",
+          "type": "spawn",
+          "tile": 355577
+        }
+      ]
+    },
+    {
+      "turnNumber": 171,
+      "intents": [
+        {
+          "clientID": "K1gDRHG4",
+          "type": "spawn",
+          "tile": 418620
+        }
+      ]
+    },
+    {
+      "turnNumber": 178,
+      "intents": [
+        {
+          "clientID": "K1gDRHG4",
+          "type": "spawn",
+          "tile": 329645
+        }
+      ]
+    },
+    {
+      "turnNumber": 183,
+      "intents": [
+        {
+          "clientID": "K1gDRHG4",
+          "type": "spawn",
+          "tile": 488645
+        }
+      ]
+    },
+    {
+      "turnNumber": 188,
+      "intents": [
+        {
+          "clientID": "K1gDRHG4",
+          "type": "spawn",
+          "tile": 415513
+        }
+      ]
+    },
+    {
+      "turnNumber": 192,
+      "intents": [
+        {
+          "clientID": "K1gDRHG4",
+          "type": "spawn",
+          "tile": 400670
+        }
+      ]
+    },
+    {
+      "turnNumber": 195,
+      "intents": [
+        {
+          "clientID": "K1gDRHG4",
+          "type": "spawn",
+          "tile": 299606
+        }
+      ]
+    },
+    {
+      "turnNumber": 199,
+      "intents": [
+        {
+          "clientID": "K1gDRHG4",
+          "type": "spawn",
+          "tile": 473669
+        }
+      ]
+    },
+    {
+      "turnNumber": 204,
+      "intents": [
+        {
+          "clientID": "K1gDRHG4",
+          "type": "spawn",
+          "tile": 406511
+        }
+      ]
+    },
+    {
+      "turnNumber": 208,
+      "intents": [
+        {
+          "clientID": "K1gDRHG4",
+          "type": "spawn",
+          "tile": 327590
+        }
+      ]
+    },
+    {
+      "turnNumber": 211,
+      "intents": [
+        {
+          "clientID": "K1gDRHG4",
+          "type": "spawn",
+          "tile": 418676
+        }
+      ]
+    },
+    {
+      "turnNumber": 215,
+      "intents": [
+        {
+          "clientID": "K1gDRHG4",
+          "type": "spawn",
+          "tile": 466687
+        }
+      ]
+    },
+    {
+      "turnNumber": 219,
+      "intents": [
+        {
+          "clientID": "K1gDRHG4",
+          "type": "spawn",
+          "tile": 454640
+        }
+      ]
+    },
+    {
+      "turnNumber": 222,
+      "intents": [
+        {
+          "clientID": "K1gDRHG4",
+          "type": "spawn",
+          "tile": 306620
+        }
+      ]
+    },
+    {
+      "turnNumber": 227,
+      "intents": [
+        {
+          "clientID": "K1gDRHG4",
+          "type": "spawn",
+          "tile": 345582
+        }
+      ]
+    },
+    {
+      "turnNumber": 234,
+      "intents": [
+        {
+          "clientID": "K1gDRHG4",
+          "type": "spawn",
+          "tile": 348737
+        }
+      ]
+    },
+    {
+      "turnNumber": 240,
+      "intents": [
+        {
+          "clientID": "K1gDRHG4",
+          "type": "spawn",
+          "tile": 276711
+        }
+      ]
+    },
+    {
+      "turnNumber": 244,
+      "intents": [
+        {
+          "clientID": "K1gDRHG4",
+          "type": "spawn",
+          "tile": 455656
+        }
+      ]
+    },
+    {
+      "turnNumber": 249,
+      "intents": [
+        {
+          "clientID": "K1gDRHG4",
+          "type": "spawn",
+          "tile": 340620
+        }
+      ]
+    },
+    {
+      "turnNumber": 254,
+      "intents": [
+        {
+          "clientID": "K1gDRHG4",
+          "type": "spawn",
+          "tile": 480663
+        }
+      ]
+    },
+    {
+      "turnNumber": 265,
+      "intents": [
+        {
+          "clientID": "K1gDRHG4",
+          "type": "spawn",
+          "tile": 269663
+        }
+      ]
+    },
+    {
+      "turnNumber": 276,
+      "intents": [
+        {
+          "clientID": "K1gDRHG4",
+          "type": "spawn",
+          "tile": 422649
+        }
+      ]
+    },
+    {
+      "turnNumber": 284,
+      "intents": [
+        {
+          "clientID": "K1gDRHG4",
+          "type": "spawn",
+          "tile": 364588
+        }
+      ]
+    },
+    {
+      "turnNumber": 289,
+      "intents": [
+        {
+          "clientID": "K1gDRHG4",
+          "type": "spawn",
+          "tile": 466674
+        }
+      ]
+    },
+    {
+      "turnNumber": 298,
+      "intents": [
+        {
+          "clientID": "K1gDRHG4",
+          "type": "spawn",
+          "tile": 284671
+        }
+      ]
+    }
+  ]
+}

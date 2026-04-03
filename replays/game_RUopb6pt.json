@@ -1,0 +1,50 @@
+{
+  "version": "v0.0.2",
+  "gitCommit": "d358ef79de8b4aa39ad42875a6d6e5efd11444a4",
+  "domain": "openfront.io",
+  "subdomain": "green",
+  "info": {
+    "gameID": "RUopb6pt",
+    "config": {
+      "gameMap": "Australia",
+      "difficulty": "Easy",
+      "donateGold": false,
+      "donateTroops": false,
+      "gameType": "Singleplayer",
+      "gameMode": "Free For All",
+      "gameMapSize": "Normal",
+      "disableNations": false,
+      "bots": 400,
+      "infiniteGold": false,
+      "infiniteTroops": false,
+      "instantBuild": false,
+      "randomSpawn": false,
+      "disabledUnits": [],
+      "playerTeams": 2
+    },
+    "players": [
+      {
+        "clientID": "QxRhqJDn",
+        "username": "[PUSH] Biffeur",
+        "clanTag": "PUSH",
+        "cosmetics": {
+          "flag": ""
+        },
+        "persistentID": null
+      }
+    ],
+    "lobbyCreatedAt": 1770253065555,
+    "start": 1770253065555,
+    "end": 1770253067499,
+    "duration": 1,
+    "num_turns": 10,
+    "lobbyFillTime": 0
+  },
+  "turns": [
+    {
+      "turnNumber": 0,
+      "intents": [],
+      "hash": 94419963350001
+    }
+  ]
+}

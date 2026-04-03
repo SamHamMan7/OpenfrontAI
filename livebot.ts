@@ -1,0 +1,118 @@
+import WebSocket from 'ws';
+import * as ort from 'onnxruntime-node';
+import { randomUUID } from 'crypto';
+
+const WIDTH = 2000;
+const HEIGHT = 1500;
+const M_WIDTH = 1000;
+const M_HEIGHT = 500;
+
+async function start() {
+    const session = await ort.InferenceSession.create('./models/openfront_v2.onnx');
+    
+    // We will cycle through the 3 common worker pipes
+    const workers = ['w0', 'w1', 'w2'];
+    let workerIdx = 0;
+
+    console.log("--- BOT ACTIVE: SNIPING PUBLIC LOBBIES ---");
+
+    while (true) {
+        const worker = workers[workerIdx];
+        workerIdx = (workerIdx + 1) % workers.length;
+
+        try {
+            await tryJoin(worker, session);
+        } catch (e) {
+            // Wait 1 second before trying the next worker
+            await new Promise(r => setTimeout(r, 1000));
+        }
+    }
+}
+
+async function tryJoin(worker: string, session: any) {
+    const token = randomUUID();
+    const socket = new WebSocket(`ws://localhost:9000/${worker}?token=${token}`);
+    
+    let myId = -1, myCID = "", map: Uint8Array | null = null;
+    let joined = false;
+
+    const ping = setInterval(() => {
+        if (socket.readyState === 1) socket.send(JSON.stringify({ type: "ping" }));
+    }, 5000);
+
+    return new Promise((resolve, reject) => {
+        socket.on('open', () => {
+            // Ask the worker to put us in the current active public game
+            socket.send(JSON.stringify({ type: "join", gameID: "", username: "DeepFront_AI", token: token }));
+        });
+
+        socket.on('message', async (data) => {
+            if (data instanceof Buffer || data instanceof Uint8Array) {
+                map = new Uint8Array(data);
+            } else {
+                try {
+                    const msg = JSON.parse(data.toString());
+                    
+                    if (msg.type === 'JOIN_SUCCESS' || msg.type === 'rejoin' || msg.data?.yourPlayerId) {
+                        if (!joined) {
+                            console.log(`[FOUND] Successfully entered game on ${worker}!`);
+                            joined = true;
+                        }
+                        myId = msg.data?.yourPlayerId ?? myId;
+                        myCID = msg.data?.clientID ?? myCID;
+                    }
+
+                    // Run AI on Turn, Tick, or Hash updates
+                    if (myId !== -1 && map && (msg.type === 'turn' || msg.type === 'TICK' || msg.type === 'hash')) {
+                        await runAI(socket, session, map, myId, myCID);
+                    }
+                } catch (e) {}
+            }
+        });
+
+        socket.on('close', () => {
+            clearInterval(ping);
+            if (joined) console.log(`[OFFLINE] Game ended. Sniping next...`);
+            resolve(true);
+        });
+
+        // If no response from this worker in 2 seconds, move on
+        setTimeout(() => { if (!joined) { socket.close(); reject(); } }, 2000);
+    });
+}
+
+async function runAI(ws: WebSocket, session: any, map: Uint8Array, id: number, cid: string) {
+    try {
+        const isSpawned = map.includes(id);
+        const input = new Float32Array(M_WIDTH * M_HEIGHT);
+        const sx = WIDTH / M_WIDTH, sy = HEIGHT / M_HEIGHT;
+
+        for (let y = 0; y < M_HEIGHT; y++) {
+            for (let x = 0; x < M_WIDTH; x++) {
+                const tIdx = Math.floor(y * sy) * WIDTH + Math.floor(x * sx);
+                const tile = map[tIdx] || 0;
+                input[y * M_WIDTH + x] = (tile === id) ? 1.0 : (tile === 0 ? 0 : -1.0);
+            }
+        }
+
+        const res = await session.run({ map_state: new ort.Tensor('float32', input, [1, 1, M_HEIGHT, M_WIDTH]) });
+        const heatmap = res.click_heatmap.data;
+        let max = -100, best = -1;
+        for (let i = 0; i < heatmap.length; i++) { if (heatmap[i] > max) { max = heatmap[i]; best = i; } }
+
+        const tx = Math.floor((best % M_WIDTH) * sx);
+        const ty = Math.floor(Math.floor(best / M_WIDTH) * sy);
+        
+        // Target center land if AI is unsure, otherwise follow the heatmap
+        const target = (!isSpawned && max < -0.5) ? 1359002 : (ty * WIDTH + tx);
+
+        ws.send(JSON.stringify({ 
+            type: "intent", 
+            intent: { type: isSpawned ? "attack" : "spawn", tile: target, clientID: cid } 
+        }));
+        
+        if (!isSpawned) console.log(`[AI] Attempting spawn at ${target}...`);
+    } catch (e) {}
+}
+
+start();

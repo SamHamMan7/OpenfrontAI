@@ -1,0 +1,160 @@
+{
+  "createdAt": "2026-01-26T21:35:10.134Z",
+  "games": [
+    {
+      "gameId": "gdGiqQYh",
+      "start": "2026-01-28T01:30:01.195Z",
+      "mode": "Free For All",
+      "type": "Public",
+      "map": "Italia",
+      "difficulty": "Easy",
+      "rankedType": "1v1",
+      "clientId": "QKFvAocp"
+    },
+    {
+      "gameId": "oS8eVLHc",
+      "start": "2026-01-28T01:27:04.172Z",
+      "mode": "Free For All",
+      "type": "Public",
+      "map": "Australia",
+      "difficulty": "Easy",
+      "rankedType": "1v1",
+      "clientId": "tXkmTVzM"
+    },
+    {
+      "gameId": "9gBUpXJ5",
+      "start": "2026-01-28T01:26:18.793Z",
+      "mode": "Free For All",
+      "type": "Public",
+      "map": "Australia",
+      "difficulty": "Easy",
+      "rankedType": "1v1",
+      "clientId": "K1gDRHG4"
+    },
+    {
+      "gameId": "nLyTMhCz",
+      "start": "2026-01-28T01:17:25.071Z",
+      "mode": "Free For All",
+      "type": "Public",
+      "map": "Australia",
+      "difficulty": "Easy",
+      "rankedType": "1v1",
+      "clientId": "87WS6YZJ"
+    },
+    {
+      "gameId": "stwTVLYD",
+      "start": "2026-01-28T01:14:37.928Z",
+      "mode": "Free For All",
+      "type": "Public",
+      "map": "Iceland",
+      "difficulty": "Easy",
+      "rankedType": "1v1",
+      "clientId": "smipdxyb"
+    }
+  ],
+  "stats": {
+    "Ranked": {
+      "1v1": {
+        "wins": "53",
+        "losses": "0",
+        "total": "53",
+        "stats": {
+          "attacks": [
+            "495166949",
+            "135665476",
+            "1728082"
+          ],
+          "betrayals": "0",
+          "boats": {
+            "trade": [
+              "1088",
+              "1050",
+              "0",
+              "14"
+            ],
+            "trans": [
+              "10",
+              "0",
+              "0",
+              "0"
+            ]
+          },
+          "bombs": {
+            "abomb": [
+              "9",
+              "9",
+              "0"
+            ],
+            "hbomb": [
+              "2",
+              "2",
+              "0"
+            ],
+            "mirv": [
+              "0",
+              "0",
+              "0"
+            ],
+            "mirvw": [
+              "0",
+              "0",
+              "0"
+            ]
+          },
+          "gold": [
+            "11425700",
+            "152439700",
+            "0",
+            "0",
+            "10000",
+            "0"
+          ],
+          "units": {
+            "city": [
+              "184",
+              "20",
+              "55",
+              "14"
+            ],
+            "defp": [
+              "55",
+              "36",
+              "0",
+              "9"
+            ],
+            "port": [
+              "11",
+              "0",
+              "6",
+              "6"
+            ],
+            "saml": [
+              "0",
+              "0",
+              "0",
+              "0"
+            ],
+            "silo": [
+              "9",
+              "0",
+              "0",
+              "0"
+            ],
+            "fact": [
+              "0",
+              "2",
+              "3",
+              "0"
+            ],
+            "wshp": [
+              "13",
+              "4",
+              "0",
+              "4"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

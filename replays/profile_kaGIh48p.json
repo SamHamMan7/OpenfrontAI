@@ -1,0 +1,265 @@
+{
+  "createdAt": "2026-01-30T23:12:41.409Z",
+  "games": [
+    {
+      "gameId": "QoxW1GF3",
+      "start": "2026-02-08T23:38:14.131Z",
+      "mode": "Free For All",
+      "type": "Singleplayer",
+      "map": "Pangaea",
+      "difficulty": "Easy",
+      "rankedType": "unranked",
+      "clientId": "zowoQm1r"
+    },
+    {
+      "gameId": "e7kV9YYW",
+      "start": "2026-02-08T23:37:42.244Z",
+      "mode": "Free For All",
+      "type": "Singleplayer",
+      "map": "Falkland Islands",
+      "difficulty": "Easy",
+      "rankedType": "unranked",
+      "clientId": "qhbP9UMV"
+    },
+    {
+      "gameId": "yZFusage",
+      "start": "2026-02-08T23:37:35.603Z",
+      "mode": "Free For All",
+      "type": "Singleplayer",
+      "map": "Italia",
+      "difficulty": "Easy",
+      "rankedType": "unranked",
+      "clientId": "5REGKKH9"
+    },
+    {
+      "gameId": "hznDJdk6",
+      "start": "2026-02-08T23:37:27.848Z",
+      "mode": "Free For All",
+      "type": "Singleplayer",
+      "map": "Iceland",
+      "difficulty": "Easy",
+      "rankedType": "unranked",
+      "clientId": "G8PKBpnH"
+    },
+    {
+      "gameId": "ZPamXKTi",
+      "start": "2026-02-08T23:37:21.164Z",
+      "mode": "Free For All",
+      "type": "Singleplayer",
+      "map": "Iceland",
+      "difficulty": "Easy",
+      "rankedType": "unranked",
+      "clientId": "HQenABvv"
+    }
+  ],
+  "stats": {
+    "Public": {
+      "Team": {
+        "Easy": {
+          "wins": "0",
+          "losses": "1",
+          "total": "1",
+          "stats": {
+            "attacks": [
+              "0",
+              "1216012",
+              "0"
+            ],
+            "betrayals": "0",
+            "boats": {
+              "trade": [
+                "0",
+                "0",
+                "0",
+                "0"
+              ],
+              "trans": [
+                "0",
+                "0",
+                "0",
+                "0"
+              ]
+            },
+            "bombs": {
+              "abomb": [
+                "0",
+                "0",
+                "0"
+              ],
+              "hbomb": [
+                "0",
+                "0",
+                "0"
+              ],
+              "mirv": [
+                "0",
+                "0",
+                "0"
+              ],
+              "mirvw": [
+                "0",
+                "0",
+                "0"
+              ]
+            },
+            "gold": [
+              "270900",
+              "0",
+              "0",
+              "0",
+              "0",
+              "0"
+            ],
+            "units": {
+              "city": [
+                "0",
+                "0",
+                "0",
+                "0"
+              ],
+              "defp": [
+                "0",
+                "0",
+                "0",
+                "0"
+              ],
+              "port": [
+                "0",
+                "0",
+                "0",
+                "0"
+              ],
+              "saml": [
+                "0",
+                "0",
+                "0",
+                "0"
+              ],
+              "silo": [
+                "0",
+                "0",
+                "0",
+                "0"
+              ],
+              "fact": [
+                "0",
+                "0",
+                "0",
+                "0"
+              ],
+              "wshp": [
+                "0",
+                "0",
+                "0",
+                "0"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "Ranked": {
+      "1v1": {
+        "wins": "73",
+        "losses": "6",
+        "total": "79",
+        "stats": {
+          "attacks": [
+            "796031910",
+            "279168178",
+            "0"
+          ],
+          "betrayals": "0",
+          "boats": {
+            "trade": [
+              "3630",
+              "3595",
+              "0",
+              "27"
+            ],
+            "trans": [
+              "5",
+              "2",
+              "0",
+              "0"
+            ]
+          },
+          "bombs": {
+            "abomb": [
+              "2",
+              "1",
+              "0"
+            ],
+            "hbomb": [
+              "0",
+              "0",
+              "0"
+            ],
+            "mirv": [
+              "0",
+              "0",
+              "0"
+            ],
+            "mirvw": [
+              "0",
+              "0",
+              "0"
+            ]
+          },
+          "gold": [
+            "22853100",
+            "370478600",
+            "1016788",
+            "0",
+            "20000",
+            "0"
+          ],
+          "units": {
+            "city": [
+              "455",
+              "0",
+              "49",
+              "24"
+            ],
+            "defp": [
+              "239",
+              "23",
+              "0",
+              "7"
+            ],
+            "port": [
+              "19",
+              "0",
+              "5",
+              "4"
+            ],
+            "saml": [
+              "0",
+              "0",
+              "1",
+              "0"
+            ],
+            "silo": [
+              "3",
+              "1",
+              "4",
+              "1"
+            ],
+            "fact": [
+              "0",
+              "0",
+              "2",
+              "0"
+            ],
+            "wshp": [
+              "18",
+              "2",
+              "0",
+              "3"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "version": "v0.0.2",
+  "gitCommit": "ebe7f76cd312b11d4b4154000ed1a058304a8978",
+  "domain": "openfront.io",
+  "subdomain": "blue",
+  "info": {
+    "gameID": "g8D4WcMb",
+    "config": {
+      "gameMap": "World",
+      "difficulty": "Easy",
+      "donateGold": false,
+      "donateTroops": false,
+      "gameType": "Singleplayer",
+      "gameMode": "Free For All",
+      "gameMapSize": "Normal",
+      "nations": "default",
+      "bots": 400,
+      "infiniteGold": false,
+      "infiniteTroops": false,
+      "instantBuild": false,
+      "randomSpawn": false,
+      "disabledUnits": [],
+      "playerTeams": 2
+    },
+    "players": [
+      {
+        "clientID": "G6td4XFx",
+        "username": "[AI] Medium",
+        "clanTag": "AI",
+        "cosmetics": {},
+        "persistentID": null
+      }
+    ],
+    "lobbyCreatedAt": 1773411510184,
+    "start": 1773411510184,
+    "end": 1773411516023,
+    "duration": 5,
+    "num_turns": 44,
+    "lobbyFillTime": 0
+  },
+  "turns": [
+    {
+      "turnNumber": 0,
+      "intents": [],
+      "hash": 886718416937501
+    },
+    {
+      "turnNumber": 10,
+      "intents": [
+        {
+          "type": "spawn",
+          "tile": 794942,
+          "clientID": "G6td4XFx"
+        }
+      ]
+    }
+  ]
+}

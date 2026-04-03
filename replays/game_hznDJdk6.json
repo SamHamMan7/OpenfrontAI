@@ -1,0 +1,50 @@
+{
+  "version": "v0.0.2",
+  "gitCommit": "b55f7dadbbcb7a16696e47e0fa45e8705f516889",
+  "domain": "openfront.io",
+  "subdomain": "blue",
+  "info": {
+    "gameID": "hznDJdk6",
+    "config": {
+      "gameMap": "Iceland",
+      "difficulty": "Easy",
+      "donateGold": false,
+      "donateTroops": false,
+      "gameType": "Singleplayer",
+      "gameMode": "Free For All",
+      "gameMapSize": "Normal",
+      "disableNations": false,
+      "bots": 400,
+      "infiniteGold": false,
+      "infiniteTroops": false,
+      "instantBuild": false,
+      "randomSpawn": false,
+      "disabledUnits": [],
+      "playerTeams": 2
+    },
+    "players": [
+      {
+        "clientID": "G8PKBpnH",
+        "username": "[MOL] Biffeur",
+        "clanTag": "MOL",
+        "cosmetics": {
+          "flag": ""
+        },
+        "persistentID": null
+      }
+    ],
+    "lobbyCreatedAt": 1770593847848,
+    "start": 1770593847848,
+    "end": 1770593850068,
+    "duration": 2,
+    "num_turns": 14,
+    "lobbyFillTime": 0
+  },
+  "turns": [
+    {
+      "turnNumber": 0,
+      "intents": [],
+      "hash": 154121140450001
+    }
+  ]
+}

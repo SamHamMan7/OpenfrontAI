@@ -1,0 +1,160 @@
+{
+  "version": "v0.0.2",
+  "gitCommit": "2f7b41c53d0c33d0686b4e7ad7482004f8acfcec",
+  "domain": "openfront.io",
+  "subdomain": "blue",
+  "info": {
+    "gameID": "oQvRuBDb",
+    "config": {
+      "gameMap": "Australia",
+      "difficulty": "Easy",
+      "donateGold": false,
+      "donateTroops": false,
+      "gameType": "Public",
+      "gameMode": "Free For All",
+      "rankedType": "1v1",
+      "gameMapSize": "Compact",
+      "disableNations": true,
+      "bots": 100,
+      "infiniteGold": false,
+      "infiniteTroops": false,
+      "instantBuild": false,
+      "randomSpawn": false,
+      "maxPlayers": 2,
+      "maxTimerValue": 10,
+      "spawnImmunityDuration": 300,
+      "disabledUnits": []
+    },
+    "players": [
+      {
+        "stats": {
+          "attacks": [
+            "2470"
+          ],
+          "conquests": [
+            "0",
+            "0",
+            "1"
+          ],
+          "gold": [
+            "900",
+            "150"
+          ]
+        },
+        "clientID": "M2GBLmLn",
+        "username": "[ROC] Sployer2.0",
+        "clanTag": "ROC",
+        "cosmetics": {},
+        "persistentID": null
+      },
+      {
+        "clientID": "UbjV6FDw",
+        "username": "He Died Like a Dog",
+        "cosmetics": {
+          "flag": "Macedonia"
+        },
+        "persistentID": null
+      }
+    ],
+    "lobbyCreatedAt": 1773278142134,
+    "start": 1773278149135,
+    "end": 1773278180351,
+    "duration": 31,
+    "num_turns": 311,
+    "winner": [
+      "player",
+      "M2GBLmLn"
+    ],
+    "lobbyFillTime": 7001
+  },
+  "turns": [
+    {
+      "turnNumber": 0,
+      "intents": [
+        {
+          "type": "mark_disconnected",
+          "clientID": "M2GBLmLn",
+          "isDisconnected": false
+        },
+        {
+          "type": "mark_disconnected",
+          "clientID": "UbjV6FDw",
+          "isDisconnected": false
+        }
+      ],
+      "hash": 54778257400001
+    },
+    {
+      "turnNumber": 10,
+      "intents": [],
+      "hash": 1166567404189985
+    },
+    {
+      "turnNumber": 20,
+      "intents": [],
+      "hash": 1166567404189985
+    },
+    {
+      "turnNumber": 30,
+      "intents": [],
+      "hash": 1166567404189985
+    },
+    {
+      "turnNumber": 40,
+      "intents": [],
+      "hash": 1166567404189985
+    },
+    {
+      "turnNumber": 50,
+      "intents": [],
+      "hash": 1166567404189985
+    },
+    {
+      "turnNumber": 60,
+      "intents": [],
+      "hash": 1166567404189985
+    },
+    {
+      "turnNumber": 70,
+      "intents": [],
+      "hash": 1166567404189985
+    },
+    {
+      "turnNumber": 80,
+      "intents": [],
+      "hash": 1166567404189985
+    },
+    {
+      "turnNumber": 274,
+      "intents": [
+        {
+          "clientID": "M2GBLmLn",
+          "type": "spawn",
+          "tile": 405628
+        }
+      ]
+    },
+    {
+      "turnNumber": 303,
+      "intents": [
+        {
+          "clientID": "M2GBLmLn",
+          "type": "attack",
+          "targetID": "9oduw0fd",
+          "troops": 1250
+        }
+      ]
+    },
+    {
+      "turnNumber": 305,
+      "intents": [
+        {
+          "clientID": "M2GBLmLn",
+          "type": "attack",
+          "targetID": "9oduw0fd",
+          "troops": 1220.4
+        }
+      ]
+    }
+  ]
+}

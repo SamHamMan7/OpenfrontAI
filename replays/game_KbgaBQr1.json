@@ -1,0 +1,84 @@
+{
+  "version": "v0.0.2",
+  "gitCommit": "e9e2f06d69c6ca5a3d4e33b147a67434d537095d",
+  "domain": "openfront.io",
+  "subdomain": "green",
+  "info": {
+    "gameID": "KbgaBQr1",
+    "config": {
+      "gameMap": "Australia",
+      "difficulty": "Easy",
+      "donateGold": false,
+      "donateTroops": false,
+      "gameType": "Public",
+      "gameMode": "Free For All",
+      "rankedType": "1v1",
+      "gameMapSize": "Compact",
+      "disableNations": true,
+      "bots": 100,
+      "infiniteGold": false,
+      "infiniteTroops": false,
+      "instantBuild": false,
+      "randomSpawn": false,
+      "maxPlayers": 2,
+      "maxTimerValue": 10,
+      "spawnImmunityDuration": 50,
+      "disabledUnits": []
+    },
+    "players": [
+      {
+        "stats": {
+          "gold": [
+            "900"
+          ]
+        },
+        "clientID": "ajTXTMFj",
+        "username": "anon142",
+        "cosmetics": {},
+        "persistentID": null
+      }
+    ],
+    "lobbyCreatedAt": 1769283674138,
+    "start": 1769283679139,
+    "end": 1769283710424,
+    "duration": 31,
+    "num_turns": 312,
+    "winner": [
+      "player",
+      "ajTXTMFj"
+    ],
+    "lobbyFillTime": 5001
+  },
+  "turns": [
+    {
+      "turnNumber": 0,
+      "intents": [
+        {
+          "type": "mark_disconnected",
+          "clientID": "ajTXTMFj",
+          "isDisconnected": false
+        }
+      ]
+    },
+    {
+      "turnNumber": 291,
+      "intents": [
+        {
+          "clientID": "ajTXTMFj",
+          "type": "spawn",
+          "tile": 442664
+        }
+      ]
+    },
+    {
+      "turnNumber": 292,
+      "intents": [
+        {
+          "clientID": "ajTXTMFj",
+          "type": "spawn",
+          "tile": 442664
+        }
+      ]
+    }
+  ]
+}

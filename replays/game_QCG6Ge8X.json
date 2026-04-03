@@ -1,0 +1,433 @@
+{
+  "version": "v0.0.2",
+  "gitCommit": "dd2c239aa1665c46731c964cea53af61448bf8fe",
+  "domain": "openfront.io",
+  "subdomain": "green",
+  "info": {
+    "gameID": "QCG6Ge8X",
+    "config": {
+      "gameMap": "Asia",
+      "difficulty": "Medium",
+      "donateGold": false,
+      "donateTroops": false,
+      "gameType": "Public",
+      "gameMode": "Free For All",
+      "rankedType": "1v1",
+      "gameMapSize": "Compact",
+      "nations": "disabled",
+      "bots": 100,
+      "infiniteGold": false,
+      "infiniteTroops": false,
+      "instantBuild": false,
+      "randomSpawn": false,
+      "maxPlayers": 2,
+      "maxTimerValue": 10,
+      "spawnImmunityDuration": 300,
+      "disabledUnits": []
+    },
+    "players": [
+      {
+        "stats": {
+          "gold": [
+            "900"
+          ]
+        },
+        "clientID": "JhM1BTCg",
+        "username": "[LBU] Princesse l__l",
+        "clanTag": "LBU",
+        "cosmetics": {},
+        "persistentID": null
+      }
+    ],
+    "lobbyCreatedAt": 1773793662721,
+    "start": 1773793671793,
+    "end": 1773793703021,
+    "duration": 31,
+    "num_turns": 311,
+    "winner": [
+      "player",
+      "JhM1BTCg"
+    ],
+    "lobbyFillTime": 9072
+  },
+  "turns": [
+    {
+      "turnNumber": 0,
+      "intents": [
+        {
+          "type": "mark_disconnected",
+          "clientID": "JhM1BTCg",
+          "isDisconnected": false
+        }
+      ]
+    },
+    {
+      "turnNumber": 70,
+      "intents": [],
+      "hash": 1071954402640957
+    },
+    {
+      "turnNumber": 71,
+      "intents": [
+        {
+          "type": "mark_disconnected",
+          "clientID": "UqgrYijz",
+          "isDisconnected": false
+        }
+      ]
+    },
+    {
+      "turnNumber": 80,
+      "intents": [],
+      "hash": 1071954402640957
+    },
+    {
+      "turnNumber": 90,
+      "intents": [],
+      "hash": 1071954402640957
+    },
+    {
+      "turnNumber": 100,
+      "intents": [],
+      "hash": 1071954402640957
+    },
+    {
+      "turnNumber": 110,
+      "intents": [],
+      "hash": 1071954402640957
+    },
+    {
+      "turnNumber": 114,
+      "intents": [
+        {
+          "type": "spawn",
+          "tile": 204346,
+          "clientID": "UqgrYijz"
+        }
+      ]
+    },
+    {
+      "turnNumber": 115,
+      "intents": [
+        {
+          "type": "spawn",
+          "tile": 204346,
+          "clientID": "UqgrYijz"
+        }
+      ]
+    },
+    {
+      "turnNumber": 120,
+      "intents": [],
+      "hash": 1071954402640957
+    },
+    {
+      "turnNumber": 124,
+      "intents": [
+        {
+          "type": "spawn",
+          "tile": 203342,
+          "clientID": "UqgrYijz"
+        }
+      ]
+    },
+    {
+      "turnNumber": 125,
+      "intents": [
+        {
+          "type": "spawn",
+          "tile": 203342,
+          "clientID": "UqgrYijz"
+        }
+      ]
+    },
+    {
+      "turnNumber": 126,
+      "intents": [
+        {
+          "type": "spawn",
+          "tile": 203342,
+          "clientID": "UqgrYijz"
+        }
+      ]
+    },
+    {
+      "turnNumber": 127,
+      "intents": [
+        {
+          "type": "spawn",
+          "tile": 203342,
+          "clientID": "UqgrYijz"
+        }
+      ]
+    },
+    {
+      "turnNumber": 128,
+      "intents": [
+        {
+          "type": "spawn",
+          "tile": 203342,
+          "clientID": "UqgrYijz"
+        }
+      ]
+    },
+    {
+      "turnNumber": 130,
+      "intents": [
+        {
+          "type": "spawn",
+          "tile": 203342,
+          "clientID": "UqgrYijz"
+        }
+      ],
+      "hash": 1071954402640957
+    },
+    {
+      "turnNumber": 132,
+      "intents": [
+        {
+          "type": "spawn",
+          "tile": 203342,
+          "clientID": "UqgrYijz"
+        }
+      ]
+    },
+    {
+      "turnNumber": 134,
+      "intents": [
+        {
+          "type": "spawn",
+          "tile": 203342,
+          "clientID": "UqgrYijz"
+        },
+        {
+          "type": "spawn",
+          "tile": 203342,
+          "clientID": "UqgrYijz"
+        }
+      ]
+    },
+    {
+      "turnNumber": 136,
+      "intents": [
+        {
+          "type": "spawn",
+          "tile": 203342,
+          "clientID": "UqgrYijz"
+        }
+      ]
+    },
+    {
+      "turnNumber": 138,
+      "intents": [
+        {
+          "type": "spawn",
+          "tile": 203342,
+          "clientID": "UqgrYijz"
+        }
+      ]
+    },
+    {
+      "turnNumber": 140,
+      "intents": [
+        {
+          "type": "spawn",
+          "tile": 203342,
+          "clientID": "UqgrYijz"
+        }
+      ],
+      "hash": 1071954402640957
+    },
+    {
+      "turnNumber": 141,
+      "intents": [
+        {
+          "type": "spawn",
+          "tile": 203342,
+          "clientID": "UqgrYijz"
+        }
+      ]
+    },
+    {
+      "turnNumber": 142,
+      "intents": [
+        {
+          "type": "spawn",
+          "tile": 203342,
+          "clientID": "UqgrYijz"
+        }
+      ]
+    },
+    {
+      "turnNumber": 144,
+      "intents": [
+        {
+          "type": "spawn",
+          "tile": 203342,
+          "clientID": "UqgrYijz"
+        }
+      ]
+    },
+    {
+      "turnNumber": 146,
+      "intents": [
+        {
+          "type": "spawn",
+          "tile": 305458,
+          "clientID": "JhM1BTCg"
+        }
+      ]
+    },
+    {
+      "turnNumber": 149,
+      "intents": [
+        {
+          "type": "spawn",
+          "tile": 331582,
+          "clientID": "UqgrYijz"
+        }
+      ]
+    },
+    {
+      "turnNumber": 150,
+      "intents": [
+        {
+          "type": "spawn",
+          "tile": 331582,
+          "clientID": "UqgrYijz"
+        }
+      ],
+      "hash": 1072028260165373
+    },
+    {
+      "turnNumber": 152,
+      "intents": [
+        {
+          "type": "spawn",
+          "tile": 331582,
+          "clientID": "UqgrYijz"
+        }
+      ]
+    },
+    {
+      "turnNumber": 153,
+      "intents": [
+        {
+          "type": "spawn",
+          "tile": 331582,
+          "clientID": "UqgrYijz"
+        }
+      ]
+    },
+    {
+      "turnNumber": 155,
+      "intents": [
+        {
+          "type": "spawn",
+          "tile": 331582,
+          "clientID": "UqgrYijz"
+        }
+      ]
+    },
+    {
+      "turnNumber": 156,
+      "intents": [
+        {
+          "type": "spawn",
+          "tile": 331582,
+          "clientID": "UqgrYijz"
+        }
+      ]
+    },
+    {
+      "turnNumber": 160,
+      "intents": [],
+      "hash": 1072028260165373
+    },
+    {
+      "turnNumber": 164,
+      "intents": [
+        {
+          "type": "spawn",
+          "tile": 276378,
+          "clientID": "JhM1BTCg"
+        }
+      ]
+    },
+    {
+      "turnNumber": 166,
+      "intents": [
+        {
+          "type": "spawn",
+          "tile": 331582,
+          "clientID": "UqgrYijz"
+        }
+      ]
+    },
+    {
+      "turnNumber": 168,
+      "intents": [
+        {
+          "type": "spawn",
+          "tile": 331582,
+          "clientID": "UqgrYijz"
+        }
+      ]
+    },
+    {
+      "turnNumber": 170,
+      "intents": [],
+      "hash": 1072028260165373
+    },
+    {
+      "turnNumber": 171,
+      "intents": [
+        {
+          "type": "spawn",
+          "tile": 266451,
+          "clientID": "JhM1BTCg"
+        }
+      ]
+    },
+    {
+      "turnNumber": 177,
+      "intents": [
+        {
+          "type": "spawn",
+          "tile": 297475,
+          "clientID": "JhM1BTCg"
+        }
+      ]
+    },
+    {
+      "turnNumber": 180,
+      "intents": [],
+      "hash": 1072028260165373
+    },
+    {
+      "turnNumber": 190,
+      "intents": [],
+      "hash": 1072028260165373
+    },
+    {
+      "turnNumber": 202,
+      "intents": [
+        {
+          "type": "spawn",
+          "tile": 218396,
+          "clientID": "JhM1BTCg"
+        }
+      ]
+    },
+    {
+      "turnNumber": 205,
+      "intents": [
+        {
+          "type": "spawn",
+          "tile": 245399,
+          "clientID": "JhM1BTCg"
+        }
+      ]
+    }
+  ]
+}

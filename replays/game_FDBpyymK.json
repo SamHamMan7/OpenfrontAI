@@ -1,0 +1,1794 @@
+{
+  "version": "v0.0.2",
+  "gitCommit": "1f05e2227767b820c76f3f8456e03a91fc7ee2f6",
+  "domain": "openfront.io",
+  "subdomain": "blue",
+  "info": {
+    "gameID": "FDBpyymK",
+    "config": {
+      "gameMap": "Australia",
+      "difficulty": "Easy",
+      "donateGold": false,
+      "donateTroops": false,
+      "gameType": "Public",
+      "gameMode": "Free For All",
+      "rankedType": "1v1",
+      "gameMapSize": "Compact",
+      "disableNations": true,
+      "bots": 100,
+      "infiniteGold": false,
+      "infiniteTroops": false,
+      "instantBuild": false,
+      "randomSpawn": false,
+      "maxPlayers": 2,
+      "maxTimerValue": 10,
+      "spawnImmunityDuration": 300,
+      "disabledUnits": []
+    },
+    "players": [
+      {
+        "stats": {
+          "attacks": [
+            "1231873",
+            "390777"
+          ],
+          "conquests": [
+            "0",
+            "0",
+            "1"
+          ],
+          "gold": [
+            "156900",
+            "17050"
+          ],
+          "units": {
+            "defp": [
+              "1"
+            ]
+          }
+        },
+        "clientID": "9ETTgQsR",
+        "username": "Koloss",
+        "cosmetics": {
+          "flag": "Habsburg Austria"
+        },
+        "persistentID": null
+      },
+      {
+        "stats": {
+          "attacks": [
+            "2089046",
+            "848772"
+          ],
+          "conquests": [
+            "0",
+            "0",
+            "11"
+          ],
+          "boats": {
+            "trans": [
+              "2",
+              "1"
+            ]
+          },
+          "gold": [
+            "156900",
+            "538250"
+          ],
+          "units": {
+            "defp": [
+              "2"
+            ],
+            "city": [
+              "2"
+            ]
+          }
+        },
+        "clientID": "BoVviRBo",
+        "username": "ghh",
+        "cosmetics": {},
+        "persistentID": null
+      }
+    ],
+    "lobbyCreatedAt": 1772467523012,
+    "start": 1772467528373,
+    "end": 1772467715977,
+    "duration": 187,
+    "num_turns": 1874,
+    "winner": [
+      "player",
+      "BoVviRBo"
+    ],
+    "lobbyFillTime": 5361
+  },
+  "turns": [
+    {
+      "turnNumber": 0,
+      "intents": [
+        {
+          "type": "mark_disconnected",
+          "clientID": "9ETTgQsR",
+          "isDisconnected": false
+        },
+        {
+          "type": "mark_disconnected",
+          "clientID": "BoVviRBo",
+          "isDisconnected": false
+        }
+      ],
+      "hash": 39258966250001
+    },
+    {
+      "turnNumber": 10,
+      "intents": [],
+      "hash": 1063059863560828
+    },
+    {
+      "turnNumber": 20,
+      "intents": [],
+      "hash": 1063059863560828
+    },
+    {
+      "turnNumber": 30,
+      "intents": [],
+      "hash": 1063059863560828
+    },
+    {
+      "turnNumber": 40,
+      "intents": [],
+      "hash": 1063059863560828
+    },
+    {
+      "turnNumber": 50,
+      "intents": [],
+      "hash": 1063059863560828
+    },
+    {
+      "turnNumber": 60,
+      "intents": [],
+      "hash": 1063059863560828
+    },
+    {
+      "turnNumber": 70,
+      "intents": [],
+      "hash": 1063059863560828
+    },
+    {
+      "turnNumber": 80,
+      "intents": [],
+      "hash": 1063059863560828
+    },
+    {
+      "turnNumber": 90,
+      "intents": [],
+      "hash": 1063059863560828
+    },
+    {
+      "turnNumber": 100,
+      "intents": [],
+      "hash": 1063059863560828
+    },
+    {
+      "turnNumber": 110,
+      "intents": [],
+      "hash": 1063059863560828
+    },
+    {
+      "turnNumber": 120,
+      "intents": [],
+      "hash": 1063059863560828
+    },
+    {
+      "turnNumber": 130,
+      "intents": [],
+      "hash": 1063059863560828
+    },
+    {
+      "turnNumber": 140,
+      "intents": [],
+      "hash": 1063059863560828
+    },
+    {
+      "turnNumber": 150,
+      "intents": [],
+      "hash": 1063059863560828
+    },
+    {
+      "turnNumber": 160,
+      "intents": [],
+      "hash": 1063059863560828
+    },
+    {
+      "turnNumber": 170,
+      "intents": [],
+      "hash": 1063059863560828
+    },
+    {
+      "turnNumber": 180,
+      "intents": [],
+      "hash": 1063059863560828
+    },
+    {
+      "turnNumber": 190,
+      "intents": [],
+      "hash": 1063059863560828
+    },
+    {
+      "turnNumber": 200,
+      "intents": [],
+      "hash": 1063059863560828
+    },
+    {
+      "turnNumber": 210,
+      "intents": [],
+      "hash": 1063059863560828
+    },
+    {
+      "turnNumber": 220,
+      "intents": [],
+      "hash": 1063059863560828
+    },
+    {
+      "turnNumber": 230,
+      "intents": [],
+      "hash": 1063059863560828
+    },
+    {
+      "turnNumber": 240,
+      "intents": [],
+      "hash": 1063059863560828
+    },
+    {
+      "turnNumber": 250,
+      "intents": [],
+      "hash": 1063059863560828
+    },
+    {
+      "turnNumber": 260,
+      "intents": [],
+      "hash": 1063059863560828
+    },
+    {
+      "turnNumber": 270,
+      "intents": [],
+      "hash": 1063059863560828
+    },
+    {
+      "turnNumber": 280,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "spawn",
+          "tile": 449529
+        }
+      ],
+      "hash": 1063059863560828
+    },
+    {
+      "turnNumber": 286,
+      "intents": [
+        {
+          "clientID": "9ETTgQsR",
+          "type": "spawn",
+          "tile": 412618
+        }
+      ]
+    },
+    {
+      "turnNumber": 290,
+      "intents": [],
+      "hash": 1063141522210628
+    },
+    {
+      "turnNumber": 297,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "spawn",
+          "tile": 451533
+        }
+      ]
+    },
+    {
+      "turnNumber": 300,
+      "intents": [],
+      "hash": 1063141346519796
+    },
+    {
+      "turnNumber": 308,
+      "intents": [
+        {
+          "clientID": "9ETTgQsR",
+          "type": "attack",
+          "targetID": null,
+          "troops": 5333.8
+        }
+      ]
+    },
+    {
+      "turnNumber": 309,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "attack",
+          "targetID": "2giew5sp",
+          "troops": 5265.6
+        }
+      ]
+    },
+    {
+      "turnNumber": 310,
+      "intents": [],
+      "hash": 1083268945422002
+    },
+    {
+      "turnNumber": 311,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "attack",
+          "targetID": "2giew5sp",
+          "troops": 5400.8
+        }
+      ]
+    },
+    {
+      "turnNumber": 320,
+      "intents": [],
+      "hash": 1132665332445610
+    },
+    {
+      "turnNumber": 325,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "attack",
+          "targetID": null,
+          "troops": 2230.8300000000004
+        }
+      ]
+    },
+    {
+      "turnNumber": 330,
+      "intents": [],
+      "hash": 1109799994831575
+    },
+    {
+      "turnNumber": 340,
+      "intents": [],
+      "hash": 1122848495969206
+    },
+    {
+      "turnNumber": 341,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "attack",
+          "targetID": null,
+          "troops": 2504.53
+        }
+      ]
+    },
+    {
+      "turnNumber": 343,
+      "intents": [
+        {
+          "clientID": "9ETTgQsR",
+          "type": "attack",
+          "targetID": null,
+          "troops": 6784
+        }
+      ]
+    },
+    {
+      "turnNumber": 350,
+      "intents": [],
+      "hash": 1010870694093999
+    },
+    {
+      "turnNumber": 355,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "attack",
+          "targetID": null,
+          "troops": 2732.7300000000005
+        }
+      ]
+    },
+    {
+      "turnNumber": 360,
+      "intents": [],
+      "hash": 1006976744663371
+    },
+    {
+      "turnNumber": 369,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "attack",
+          "targetID": null,
+          "troops": 2973.7400000000002
+        }
+      ]
+    },
+    {
+      "turnNumber": 370,
+      "intents": [],
+      "hash": 1080676760976760
+    },
+    {
+      "turnNumber": 378,
+      "intents": [
+        {
+          "clientID": "9ETTgQsR",
+          "type": "attack",
+          "targetID": null,
+          "troops": 8407.6
+        }
+      ]
+    },
+    {
+      "turnNumber": 380,
+      "intents": [],
+      "hash": 1136761870875051
+    },
+    {
+      "turnNumber": 385,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "attack",
+          "targetID": null,
+          "troops": 3296.4400000000005
+        }
+      ]
+    },
+    {
+      "turnNumber": 390,
+      "intents": [],
+      "hash": 1220841620246396
+    },
+    {
+      "turnNumber": 400,
+      "intents": [],
+      "hash": 1337340755395881
+    },
+    {
+      "turnNumber": 401,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "attack",
+          "targetID": null,
+          "troops": 3635.03
+        }
+      ]
+    },
+    {
+      "turnNumber": 410,
+      "intents": [],
+      "hash": 1418999658451394
+    },
+    {
+      "turnNumber": 413,
+      "intents": [
+        {
+          "clientID": "9ETTgQsR",
+          "type": "attack",
+          "targetID": null,
+          "troops": 10171.800000000001
+        },
+        {
+          "clientID": "BoVviRBo",
+          "type": "attack",
+          "targetID": null,
+          "troops": 3831.9400000000005
+        }
+      ]
+    },
+    {
+      "turnNumber": 420,
+      "intents": [],
+      "hash": 1486440367084872
+    },
+    {
+      "turnNumber": 423,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "attack",
+          "targetID": null,
+          "troops": 3954.3700000000003
+        }
+      ]
+    },
+    {
+      "turnNumber": 430,
+      "intents": [],
+      "hash": 1570720279270102
+    },
+    {
+      "turnNumber": 438,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "attack",
+          "targetID": null,
+          "troops": 4289.39
+        }
+      ]
+    },
+    {
+      "turnNumber": 440,
+      "intents": [],
+      "hash": 1651414826118249
+    },
+    {
+      "turnNumber": 449,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "attack",
+          "targetID": null,
+          "troops": 4458.860000000001
+        }
+      ]
+    },
+    {
+      "turnNumber": 450,
+      "intents": [],
+      "hash": 1700120996829533
+    },
+    {
+      "turnNumber": 455,
+      "intents": [
+        {
+          "clientID": "9ETTgQsR",
+          "type": "attack",
+          "targetID": null,
+          "troops": 13037.6
+        }
+      ]
+    },
+    {
+      "turnNumber": 458,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "attack",
+          "targetID": null,
+          "troops": 4542.09
+        }
+      ]
+    },
+    {
+      "turnNumber": 460,
+      "intents": [],
+      "hash": 1732190286746810
+    },
+    {
+      "turnNumber": 468,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "attack",
+          "targetID": null,
+          "troops": 4673.830000000001
+        }
+      ]
+    },
+    {
+      "turnNumber": 470,
+      "intents": [],
+      "hash": 1795376710752384
+    },
+    {
+      "turnNumber": 480,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "attack",
+          "targetID": null,
+          "troops": 4902.8
+        }
+      ],
+      "hash": 1850892263739783
+    },
+    {
+      "turnNumber": 490,
+      "intents": [],
+      "hash": 1943077559164762
+    },
+    {
+      "turnNumber": 493,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "attack",
+          "targetID": null,
+          "troops": 5184.410000000001
+        }
+      ]
+    },
+    {
+      "turnNumber": 495,
+      "intents": [
+        {
+          "clientID": "9ETTgQsR",
+          "type": "attack",
+          "targetID": null,
+          "troops": 15638
+        }
+      ]
+    },
+    {
+      "turnNumber": 500,
+      "intents": [],
+      "hash": 1997661589315969
+    },
+    {
+      "turnNumber": 501,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "attack",
+          "targetID": null,
+          "troops": 5217.52
+        }
+      ]
+    },
+    {
+      "turnNumber": 510,
+      "intents": [],
+      "hash": 2026973245314475
+    },
+    {
+      "turnNumber": 513,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "attack",
+          "targetID": null,
+          "troops": 5456.570000000001
+        }
+      ]
+    },
+    {
+      "turnNumber": 520,
+      "intents": [],
+      "hash": 2064406805821060
+    },
+    {
+      "turnNumber": 524,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "attack",
+          "targetID": null,
+          "troops": 5644.9400000000005
+        }
+      ]
+    },
+    {
+      "turnNumber": 530,
+      "intents": [],
+      "hash": 2181596556162374
+    },
+    {
+      "turnNumber": 531,
+      "intents": [
+        {
+          "clientID": "9ETTgQsR",
+          "type": "attack",
+          "targetID": null,
+          "troops": 17553.600000000002
+        }
+      ]
+    },
+    {
+      "turnNumber": 532,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "attack",
+          "targetID": null,
+          "troops": 5672.870000000001
+        }
+      ]
+    },
+    {
+      "turnNumber": 540,
+      "intents": [],
+      "hash": 2200279640764133
+    },
+    {
+      "turnNumber": 543,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "attack",
+          "targetID": null,
+          "troops": 5862.780000000001
+        }
+      ]
+    },
+    {
+      "turnNumber": 550,
+      "intents": [],
+      "hash": 2341569445533814
+    },
+    {
+      "turnNumber": 560,
+      "intents": [],
+      "hash": 2438325396896113
+    },
+    {
+      "turnNumber": 568,
+      "intents": [
+        {
+          "clientID": "9ETTgQsR",
+          "type": "attack",
+          "targetID": null,
+          "troops": 19844.800000000003
+        }
+      ]
+    },
+    {
+      "turnNumber": 570,
+      "intents": [],
+      "hash": 2479220151154057
+    },
+    {
+      "turnNumber": 580,
+      "intents": [],
+      "hash": 2568550074078863
+    },
+    {
+      "turnNumber": 590,
+      "intents": [],
+      "hash": 2666046107813534
+    },
+    {
+      "turnNumber": 595,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "attack",
+          "targetID": "7589wwnc",
+          "troops": 72819.24
+        }
+      ]
+    },
+    {
+      "turnNumber": 600,
+      "intents": [],
+      "hash": 2788173889150273
+    },
+    {
+      "turnNumber": 610,
+      "intents": [],
+      "hash": 2914690242218006
+    },
+    {
+      "turnNumber": 620,
+      "intents": [],
+      "hash": 3047682822983581
+    },
+    {
+      "turnNumber": 622,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "attack",
+          "targetID": "7589wwnc",
+          "troops": 7074.08
+        }
+      ]
+    },
+    {
+      "turnNumber": 630,
+      "intents": [],
+      "hash": 3169539776468626
+    },
+    {
+      "turnNumber": 635,
+      "intents": [
+        {
+          "clientID": "9ETTgQsR",
+          "type": "attack",
+          "targetID": "7589wwnc",
+          "troops": 57698.54
+        }
+      ]
+    },
+    {
+      "turnNumber": 640,
+      "intents": [],
+      "hash": 3209188617714426
+    },
+    {
+      "turnNumber": 645,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "attack",
+          "targetID": "7589wwnc",
+          "troops": 7965.68
+        }
+      ]
+    },
+    {
+      "turnNumber": 650,
+      "intents": [],
+      "hash": 3407200240303576
+    },
+    {
+      "turnNumber": 660,
+      "intents": [],
+      "hash": 3622501911323019
+    },
+    {
+      "turnNumber": 670,
+      "intents": [],
+      "hash": 3806409147261205
+    },
+    {
+      "turnNumber": 680,
+      "intents": [],
+      "hash": 4008765233231653
+    },
+    {
+      "turnNumber": 681,
+      "intents": [
+        {
+          "clientID": "9ETTgQsR",
+          "type": "attack",
+          "targetID": "p9f9a8lr",
+          "troops": 72484.85
+        }
+      ]
+    },
+    {
+      "turnNumber": 690,
+      "intents": [],
+      "hash": 4151428353430289
+    },
+    {
+      "turnNumber": 700,
+      "intents": [],
+      "hash": 4282417257190046
+    },
+    {
+      "turnNumber": 710,
+      "intents": [],
+      "hash": 4534551651595821
+    },
+    {
+      "turnNumber": 720,
+      "intents": [],
+      "hash": 4736879680212944
+    },
+    {
+      "turnNumber": 730,
+      "intents": [],
+      "hash": 4942226830272920
+    },
+    {
+      "turnNumber": 740,
+      "intents": [],
+      "hash": 5201735571868807
+    },
+    {
+      "turnNumber": 750,
+      "intents": [],
+      "hash": 5501753749025436
+    },
+    {
+      "turnNumber": 752,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "attack",
+          "targetID": "qfk1zrz5",
+          "troops": 199222.40000000002
+        }
+      ]
+    },
+    {
+      "turnNumber": 760,
+      "intents": [],
+      "hash": 5562579151553263
+    },
+    {
+      "turnNumber": 763,
+      "intents": [
+        {
+          "clientID": "9ETTgQsR",
+          "type": "attack",
+          "targetID": "9h2wzyt9",
+          "troops": 52422.39000000001
+        }
+      ]
+    },
+    {
+      "turnNumber": 767,
+      "intents": [
+        {
+          "clientID": "9ETTgQsR",
+          "type": "attack",
+          "targetID": "9h2wzyt9",
+          "troops": 38170.170000000006
+        }
+      ]
+    },
+    {
+      "turnNumber": 770,
+      "intents": [],
+      "hash": 5410090856527308
+    },
+    {
+      "turnNumber": 771,
+      "intents": [
+        {
+          "clientID": "9ETTgQsR",
+          "type": "attack",
+          "targetID": "9h2wzyt9",
+          "troops": 28129.140000000003
+        }
+      ]
+    },
+    {
+      "turnNumber": 772,
+      "intents": [
+        {
+          "clientID": "9ETTgQsR",
+          "type": "attack",
+          "targetID": "9h2wzyt9",
+          "troops": 20802.420000000002
+        }
+      ]
+    },
+    {
+      "turnNumber": 774,
+      "intents": [
+        {
+          "clientID": "9ETTgQsR",
+          "type": "attack",
+          "targetID": "9h2wzyt9",
+          "troops": 15545.250000000002
+        }
+      ]
+    },
+    {
+      "turnNumber": 777,
+      "intents": [
+        {
+          "clientID": "9ETTgQsR",
+          "type": "attack",
+          "targetID": "9h2wzyt9",
+          "troops": 11676.69
+        }
+      ]
+    },
+    {
+      "turnNumber": 780,
+      "intents": [],
+      "hash": 5503173925494128
+    },
+    {
+      "turnNumber": 790,
+      "intents": [],
+      "hash": 5672263782937466
+    },
+    {
+      "turnNumber": 800,
+      "intents": [],
+      "hash": 5619587560901760
+    },
+    {
+      "turnNumber": 810,
+      "intents": [],
+      "hash": 5781827647124481
+    },
+    {
+      "turnNumber": 820,
+      "intents": [
+        {
+          "clientID": "9ETTgQsR",
+          "type": "build_unit",
+          "unit": "Defense Post",
+          "tile": 377570
+        }
+      ],
+      "hash": 5848720107551518
+    },
+    {
+      "turnNumber": 830,
+      "intents": [],
+      "hash": 6017924832089236
+    },
+    {
+      "turnNumber": 840,
+      "intents": [],
+      "hash": 5955864755947595
+    },
+    {
+      "turnNumber": 850,
+      "intents": [],
+      "hash": 5998432403106591
+    },
+    {
+      "turnNumber": 856,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "build_unit",
+          "unit": "Defense Post",
+          "tile": 413572
+        }
+      ]
+    },
+    {
+      "turnNumber": 860,
+      "intents": [],
+      "hash": 6136052260066602
+    },
+    {
+      "turnNumber": 870,
+      "intents": [],
+      "hash": 6070298358428155
+    },
+    {
+      "turnNumber": 880,
+      "intents": [],
+      "hash": 6135986664736406
+    },
+    {
+      "turnNumber": 890,
+      "intents": [],
+      "hash": 6197783640413216
+    },
+    {
+      "turnNumber": 895,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "attack",
+          "targetID": "cwzslh12",
+          "troops": 73899.8
+        }
+      ]
+    },
+    {
+      "turnNumber": 900,
+      "intents": [],
+      "hash": 6243940340723586
+    },
+    {
+      "turnNumber": 910,
+      "intents": [],
+      "hash": 6298539368594631
+    },
+    {
+      "turnNumber": 912,
+      "intents": [
+        {
+          "clientID": "9ETTgQsR",
+          "type": "attack",
+          "targetID": "cwzslh12",
+          "troops": 34520.58
+        }
+      ]
+    },
+    {
+      "turnNumber": 920,
+      "intents": [],
+      "hash": 6186949739070249
+    },
+    {
+      "turnNumber": 925,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "attack",
+          "targetID": "cwzslh12",
+          "troops": 12662.1
+        }
+      ]
+    },
+    {
+      "turnNumber": 930,
+      "intents": [],
+      "hash": 6095395025965914
+    },
+    {
+      "turnNumber": 931,
+      "intents": [
+        {
+          "clientID": "9ETTgQsR",
+          "type": "attack",
+          "targetID": "405lapy6",
+          "troops": 39190.770000000004
+        }
+      ]
+    },
+    {
+      "turnNumber": 940,
+      "intents": [],
+      "hash": 6013910620192702
+    },
+    {
+      "turnNumber": 950,
+      "intents": [],
+      "hash": 6003129510536541
+    },
+    {
+      "turnNumber": 960,
+      "intents": [],
+      "hash": 6128883015381807
+    },
+    {
+      "turnNumber": 965,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "attack",
+          "targetID": "7hwqjxwm",
+          "troops": 73681.09999999999
+        }
+      ]
+    },
+    {
+      "turnNumber": 970,
+      "intents": [],
+      "hash": 6165649101115124
+    },
+    {
+      "turnNumber": 980,
+      "intents": [],
+      "hash": 6158992570191639
+    },
+    {
+      "turnNumber": 990,
+      "intents": [],
+      "hash": 6126793911604854
+    },
+    {
+      "turnNumber": 993,
+      "intents": [
+        {
+          "clientID": "9ETTgQsR",
+          "type": "attack",
+          "targetID": "i5e0x27s",
+          "troops": 45700.740000000005
+        }
+      ]
+    },
+    {
+      "turnNumber": 1000,
+      "intents": [],
+      "hash": 6161488930319163
+    },
+    {
+      "turnNumber": 1010,
+      "intents": [],
+      "hash": 6112791825550000
+    },
+    {
+      "turnNumber": 1020,
+      "intents": [],
+      "hash": 6174694927605996
+    },
+    {
+      "turnNumber": 1030,
+      "intents": [],
+      "hash": 6192249774368109
+    },
+    {
+      "turnNumber": 1033,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "attack",
+          "targetID": "405lapy6",
+          "troops": 86572.73
+        }
+      ]
+    },
+    {
+      "turnNumber": 1040,
+      "intents": [],
+      "hash": 6264970892748138
+    },
+    {
+      "turnNumber": 1050,
+      "intents": [],
+      "hash": 6205757875721366
+    },
+    {
+      "turnNumber": 1057,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "boat",
+          "troops": 1513.39,
+          "dst": 335059
+        }
+      ]
+    },
+    {
+      "turnNumber": 1059,
+      "intents": [
+        {
+          "clientID": "9ETTgQsR",
+          "type": "attack",
+          "targetID": "i5e0x27s",
+          "troops": 51250.32000000001
+        }
+      ]
+    },
+    {
+      "turnNumber": 1060,
+      "intents": [],
+      "hash": 6204053762953153
+    },
+    {
+      "turnNumber": 1068,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "boat",
+          "troops": 1623.96,
+          "dst": 377933
+        }
+      ]
+    },
+    {
+      "turnNumber": 1070,
+      "intents": [],
+      "hash": 6185368948979652
+    },
+    {
+      "turnNumber": 1080,
+      "intents": [],
+      "hash": 6151397639293166
+    },
+    {
+      "turnNumber": 1090,
+      "intents": [],
+      "hash": 5954932079868869
+    },
+    {
+      "turnNumber": 1093,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "attack",
+          "targetID": "405lapy6",
+          "troops": 22872.719999999998
+        }
+      ]
+    },
+    {
+      "turnNumber": 1100,
+      "intents": [],
+      "hash": 5913550731804848
+    },
+    {
+      "turnNumber": 1107,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "attack",
+          "targetID": "405lapy6",
+          "troops": 22170
+        }
+      ]
+    },
+    {
+      "turnNumber": 1110,
+      "intents": [],
+      "hash": 6023261364235317
+    },
+    {
+      "turnNumber": 1120,
+      "intents": [],
+      "hash": 6111785309590879
+    },
+    {
+      "turnNumber": 1130,
+      "intents": [],
+      "hash": 6148474478734516
+    },
+    {
+      "turnNumber": 1140,
+      "intents": [],
+      "hash": 6115100528087621
+    },
+    {
+      "turnNumber": 1150,
+      "intents": [],
+      "hash": 6176217515117668
+    },
+    {
+      "turnNumber": 1160,
+      "intents": [],
+      "hash": 6287709418030060
+    },
+    {
+      "turnNumber": 1166,
+      "intents": [
+        {
+          "clientID": "9ETTgQsR",
+          "type": "attack",
+          "targetID": "i5e0x27s",
+          "troops": 93879.73
+        }
+      ]
+    },
+    {
+      "turnNumber": 1170,
+      "intents": [],
+      "hash": 6177970858257584
+    },
+    {
+      "turnNumber": 1180,
+      "intents": [],
+      "hash": 6173263523222662
+    },
+    {
+      "turnNumber": 1185,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "attack",
+          "targetID": "i5e0x27s",
+          "troops": 78642
+        }
+      ]
+    },
+    {
+      "turnNumber": 1190,
+      "intents": [],
+      "hash": 6213109092183894
+    },
+    {
+      "turnNumber": 1200,
+      "intents": [],
+      "hash": 6331973239174753
+    },
+    {
+      "turnNumber": 1209,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "attack",
+          "targetID": "p9f9a8lr",
+          "troops": 86036.09999999999
+        }
+      ]
+    },
+    {
+      "turnNumber": 1210,
+      "intents": [],
+      "hash": 6306606668976672
+    },
+    {
+      "turnNumber": 1220,
+      "intents": [],
+      "hash": 6351179011351485
+    },
+    {
+      "turnNumber": 1230,
+      "intents": [
+        {
+          "clientID": "9ETTgQsR",
+          "type": "attack",
+          "targetID": "9h2wzyt9",
+          "troops": 233547.16
+        }
+      ],
+      "hash": 5986368889498390
+    },
+    {
+      "turnNumber": 1233,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "attack",
+          "targetID": "p9f9a8lr",
+          "troops": 41883.299999999996
+        }
+      ]
+    },
+    {
+      "turnNumber": 1240,
+      "intents": [],
+      "hash": 5861746219884147
+    },
+    {
+      "turnNumber": 1250,
+      "intents": [],
+      "hash": 5765492013313959
+    },
+    {
+      "turnNumber": 1260,
+      "intents": [],
+      "hash": 5753635161914059
+    },
+    {
+      "turnNumber": 1270,
+      "intents": [],
+      "hash": 5819103870188121
+    },
+    {
+      "turnNumber": 1280,
+      "intents": [],
+      "hash": 5901163153618745
+    },
+    {
+      "turnNumber": 1287,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "attack",
+          "targetID": "405lapy6",
+          "troops": 82152.00000000001
+        }
+      ]
+    },
+    {
+      "turnNumber": 1290,
+      "intents": [],
+      "hash": 5720390071247566
+    },
+    {
+      "turnNumber": 1300,
+      "intents": [],
+      "hash": 5832394248272423
+    },
+    {
+      "turnNumber": 1302,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "build_unit",
+          "unit": "City",
+          "tile": 410487
+        }
+      ]
+    },
+    {
+      "turnNumber": 1310,
+      "intents": [],
+      "hash": 5932588458055389
+    },
+    {
+      "turnNumber": 1316,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "attack",
+          "targetID": "ulaprdbh",
+          "troops": 89090.96
+        }
+      ]
+    },
+    {
+      "turnNumber": 1320,
+      "intents": [],
+      "hash": 6001819543377693
+    },
+    {
+      "turnNumber": 1330,
+      "intents": [],
+      "hash": 6065646348859820
+    },
+    {
+      "turnNumber": 1340,
+      "intents": [],
+      "hash": 5972230537182423
+    },
+    {
+      "turnNumber": 1350,
+      "intents": [],
+      "hash": 6066051405349166
+    },
+    {
+      "turnNumber": 1352,
+      "intents": [
+        {
+          "clientID": "9ETTgQsR",
+          "type": "attack",
+          "targetID": "ulaprdbh",
+          "troops": 52121.07000000001
+        }
+      ]
+    },
+    {
+      "turnNumber": 1354,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "attack",
+          "targetID": "ulaprdbh",
+          "troops": 34912.08
+        }
+      ]
+    },
+    {
+      "turnNumber": 1360,
+      "intents": [],
+      "hash": 6050214416339257
+    },
+    {
+      "turnNumber": 1370,
+      "intents": [],
+      "hash": 6076783628533523
+    },
+    {
+      "turnNumber": 1380,
+      "intents": [],
+      "hash": 6088913615311555
+    },
+    {
+      "turnNumber": 1390,
+      "intents": [],
+      "hash": 6011368718480996
+    },
+    {
+      "turnNumber": 1400,
+      "intents": [],
+      "hash": 6073130200497357
+    },
+    {
+      "turnNumber": 1403,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "attack",
+          "targetID": "umxwqj4i",
+          "troops": 144054
+        }
+      ]
+    },
+    {
+      "turnNumber": 1410,
+      "intents": [],
+      "hash": 5964194810501625
+    },
+    {
+      "turnNumber": 1413,
+      "intents": [
+        {
+          "clientID": "9ETTgQsR",
+          "type": "attack",
+          "targetID": "umxwqj4i",
+          "troops": 65998.53
+        }
+      ]
+    },
+    {
+      "turnNumber": 1420,
+      "intents": [],
+      "hash": 5762180449840782
+    },
+    {
+      "turnNumber": 1430,
+      "intents": [],
+      "hash": 5925484133819583
+    },
+    {
+      "turnNumber": 1440,
+      "intents": [],
+      "hash": 5833792078116244
+    },
+    {
+      "turnNumber": 1450,
+      "intents": [],
+      "hash": 5852251591065432
+    },
+    {
+      "turnNumber": 1457,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "attack",
+          "targetID": "1rj6g3w8",
+          "troops": 124489.79999999999
+        }
+      ]
+    },
+    {
+      "turnNumber": 1460,
+      "intents": [],
+      "hash": 5831036505131449
+    },
+    {
+      "turnNumber": 1470,
+      "intents": [],
+      "hash": 5953014113489714
+    },
+    {
+      "turnNumber": 1480,
+      "intents": [],
+      "hash": 5997415592955497
+    },
+    {
+      "turnNumber": 1485,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "attack",
+          "targetID": "1rj6g3w8",
+          "troops": 37773.82000000001
+        }
+      ]
+    },
+    {
+      "turnNumber": 1490,
+      "intents": [],
+      "hash": 5909407006908426
+    },
+    {
+      "turnNumber": 1500,
+      "intents": [],
+      "hash": 6045863932618727
+    },
+    {
+      "turnNumber": 1502,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "attack",
+          "targetID": "umxwqj4i",
+          "troops": 36465.66
+        }
+      ]
+    },
+    {
+      "turnNumber": 1510,
+      "intents": [],
+      "hash": 6120865992060130
+    },
+    {
+      "turnNumber": 1518,
+      "intents": [
+        {
+          "clientID": "9ETTgQsR",
+          "type": "attack",
+          "targetID": "9h2wzyt9",
+          "troops": 221975.02000000002
+        }
+      ]
+    },
+    {
+      "turnNumber": 1520,
+      "intents": [],
+      "hash": 5973066594300057
+    },
+    {
+      "turnNumber": 1530,
+      "intents": [],
+      "hash": 5999050755070939
+    },
+    {
+      "turnNumber": 1540,
+      "intents": [],
+      "hash": 5841624618694020
+    },
+    {
+      "turnNumber": 1550,
+      "intents": [],
+      "hash": 5852262525214354
+    },
+    {
+      "turnNumber": 1560,
+      "intents": [],
+      "hash": 5829202369539401
+    },
+    {
+      "turnNumber": 1566,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "attack",
+          "targetID": "whf4ylv2",
+          "troops": 130136.65
+        }
+      ]
+    },
+    {
+      "turnNumber": 1570,
+      "intents": [],
+      "hash": 5799129144480899
+    },
+    {
+      "turnNumber": 1577,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "build_unit",
+          "unit": "City",
+          "tile": 326452
+        }
+      ]
+    },
+    {
+      "turnNumber": 1580,
+      "intents": [],
+      "hash": 5914675936266983
+    },
+    {
+      "turnNumber": 1590,
+      "intents": [],
+      "hash": 5933463820087460
+    },
+    {
+      "turnNumber": 1649,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "attack",
+          "targetID": "whf4ylv2",
+          "troops": 52801.32
+        }
+      ]
+    },
+    {
+      "turnNumber": 1700,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "attack",
+          "targetID": "l4enuflf",
+          "troops": 140055.6
+        }
+      ]
+    },
+    {
+      "turnNumber": 1736,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "build_unit",
+          "unit": "Defense Post",
+          "tile": 296610
+        }
+      ]
+    },
+    {
+      "turnNumber": 1781,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "attack",
+          "targetID": "6sjuc6in",
+          "troops": 169969.5
+        }
+      ]
+    },
+    {
+      "turnNumber": 1841,
+      "intents": [
+        {
+          "clientID": "BoVviRBo",
+          "type": "attack",
+          "targetID": "ckrj78og",
+          "troops": 168421.5
+        }
+      ]
+    },
+    {
+      "turnNumber": 1860,
+      "intents": [
+        {
+          "type": "mark_disconnected",
+          "clientID": "9ETTgQsR",
+          "isDisconnected": true
+        }
+      ]
+    }
+  ]
+}
