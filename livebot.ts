@@ -4,8 +4,6 @@ import { randomUUID } from 'crypto';
 
 const WIDTH = 2000;
 const HEIGHT = 1500;
-const M_WIDTH = 1000;
-const M_HEIGHT = 500;
 
 async function start() {
     const session = await ort.InferenceSession.create('./models/openfront_v2.onnx');
@@ -66,7 +64,7 @@ async function tryJoin(worker: string, session: any) {
                     if (myId !== -1 && map && (msg.type === 'turn' || msg.type === 'TICK' || msg.type === 'hash')) {
                         await runAI(socket, session, map, myId, myCID);
                     }
-                } catch (e) {}
+                } catch (e) { console.error(e); }
             }
         });
 
@@ -84,27 +82,28 @@ async function tryJoin(worker: string, session: any) {
 async function runAI(ws: WebSocket, session: any, map: Uint8Array, id: number, cid: string) {
     try {
         const isSpawned = map.includes(id);
-        const input = new Float32Array(M_WIDTH * M_HEIGHT);
-        const sx = WIDTH / M_WIDTH, sy = HEIGHT / M_HEIGHT;
+        const input = new Float32Array(WIDTH * HEIGHT);
 
-        for (let y = 0; y < M_HEIGHT; y++) {
-            for (let x = 0; x < M_WIDTH; x++) {
-                const tIdx = Math.floor(y * sy) * WIDTH + Math.floor(x * sx);
-                const tile = map[tIdx] || 0;
-                input[y * M_WIDTH + x] = (tile === id) ? 1.0 : (tile === 0 ? 0 : -1.0);
+        for (let i = 0; i < input.length; i++) {
+            const tile = map[i] || 0;
+            if (tile === 0) {
+                input[i] = 0.0;   // Void
+            } else if (tile === 255) {
+                input[i] = 0.2;   // Neutral Expansion Target
+            } else if (tile === id) {
+                input[i] = 1.0;   // Self
+            } else {
+                input[i] = -1.0;  // Hostile
             }
         }
 
-        const res = await session.run({ map_state: new ort.Tensor('float32', input, [1, 1, M_HEIGHT, M_WIDTH]) });
+        const res = await session.run({ map_state: new ort.Tensor('float32', input, [1, 1, HEIGHT, WIDTH]) });
         const heatmap = res.click_heatmap.data;
         let max = -100, best = -1;
         for (let i = 0; i < heatmap.length; i++) { if (heatmap[i] > max) { max = heatmap[i]; best = i; } }
 
-        const tx = Math.floor((best % M_WIDTH) * sx);
-        const ty = Math.floor(Math.floor(best / M_WIDTH) * sy);
-        
         // Target center land if AI is unsure, otherwise follow the heatmap
-        const target = (!isSpawned && max < -0.5) ? 1359002 : (ty * WIDTH + tx);
+        const target = (!isSpawned && max < -0.5) ? 1359002 : best;
 
         ws.send(JSON.stringify({ 
             type: "intent", 
@@ -112,7 +111,7 @@ async function runAI(ws: WebSocket, session: any, map: Uint8Array, id: number, c
         }));
         
         if (!isSpawned) console.log(`[AI] Attempting spawn at ${target}...`);
-    } catch (e) {}
+    } catch (e) { console.error(e); }
 }
 
 start();
