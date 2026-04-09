@@ -4,10 +4,12 @@ import { randomUUID } from 'crypto';
 
 const WIDTH = 2000;
 const HEIGHT = 1500;
+const M_WIDTH = 1000;
+const M_HEIGHT = 500;
 
 async function start() {
     const session = await ort.InferenceSession.create('./models/openfront_v2.onnx');
-    
+
     // We will cycle through the 3 common worker pipes
     const workers = ['w0', 'w1', 'w2'];
     let workerIdx = 0;
@@ -30,7 +32,7 @@ async function start() {
 async function tryJoin(worker: string, session: any) {
     const token = randomUUID();
     const socket = new WebSocket(`ws://localhost:9000/${worker}?token=${token}`);
-    
+
     let myId = -1, myCID = "", map: Uint8Array | null = null;
     let joined = false;
 
@@ -44,15 +46,13 @@ async function tryJoin(worker: string, session: any) {
             socket.send(JSON.stringify({ type: "join", gameID: "", username: "DeepFront_AI", token: token }));
         });
 
-        socket.on('error', () => {});
-
         socket.on('message', async (data) => {
             if (data instanceof Buffer || data instanceof Uint8Array) {
                 map = new Uint8Array(data);
             } else {
                 try {
                     const msg = JSON.parse(data.toString());
-                    
+
                     if (msg.type === 'JOIN_SUCCESS' || msg.type === 'rejoin' || msg.data?.yourPlayerId) {
                         if (!joined) {
                             console.log(`[FOUND] Successfully entered game on ${worker}!`);
@@ -84,40 +84,33 @@ async function tryJoin(worker: string, session: any) {
 async function runAI(ws: WebSocket, session: any, map: Uint8Array, id: number, cid: string) {
     try {
         const isSpawned = map.includes(id);
-        const input = new Float32Array(WIDTH * HEIGHT);
+        const input = new Float32Array(M_WIDTH * M_HEIGHT);
+        const sx = WIDTH / M_WIDTH, sy = HEIGHT / M_HEIGHT;
 
-        for (let y = 0; y < HEIGHT; y++) {
-            for (let x = 0; x < WIDTH; x++) {
-                const tIdx = y * WIDTH + x;
+        for (let y = 0; y < M_HEIGHT; y++) {
+            for (let x = 0; x < M_WIDTH; x++) {
+                const tIdx = Math.floor(y * sy) * WIDTH + Math.floor(x * sx);
                 const tile = map[tIdx] || 0;
-                if (tile === 0) {
-                    input[tIdx] = 0.0;
-                } else if (tile === 255) {
-                    input[tIdx] = 0.2;
-                } else if (tile === id) {
-                    input[tIdx] = 1.0;
-                } else {
-                    input[tIdx] = -1.0;
-                }
+                input[y * M_WIDTH + x] = (tile === id) ? 1.0 : (tile === 0 ? 0 : -1.0);
             }
         }
 
-        const res = await session.run({ map_state: new ort.Tensor('float32', input, [1, 1, HEIGHT, WIDTH]) });
+        const res = await session.run({ map_state: new ort.Tensor('float32', input, [1, 1, M_HEIGHT, M_WIDTH]) });
         const heatmap = res.click_heatmap.data;
         let max = -100, best = -1;
         for (let i = 0; i < heatmap.length; i++) { if (heatmap[i] > max) { max = heatmap[i]; best = i; } }
 
-        const tx = best % WIDTH;
-        const ty = Math.floor(best / WIDTH);
-        
-        // Target center land if AI is unsure, otherwise follow the heatmap
-        const target = (!isSpawned && max < -0.5) ? 1359002 : best;
+        const tx = Math.floor((best % M_WIDTH) * sx);
+        const ty = Math.floor(Math.floor(best / M_WIDTH) * sy);
 
-        ws.send(JSON.stringify({ 
-            type: "intent", 
-            intent: { type: isSpawned ? "attack" : "spawn", tile: target, clientID: cid } 
+        // Target center land if AI is unsure, otherwise follow the heatmap
+        const target = (!isSpawned && max < -0.5) ? 1359002 : (ty * WIDTH + tx);
+
+        ws.send(JSON.stringify({
+            type: "intent",
+            intent: { type: isSpawned ? "attack" : "spawn", tile: target, clientID: cid }
         }));
-        
+
         if (!isSpawned) console.log(`[AI] Attempting spawn at ${target}...`);
     } catch (e) {}
 }
