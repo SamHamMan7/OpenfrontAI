@@ -42,6 +42,12 @@ async function scrapeGameReplays() {
     let downloadedCount = 0;
 
     for (const gameId of gameIdsArray) {
+        // Security check: Ensure gameId is only alphanumeric to prevent path traversal
+        if (!/^[a-zA-Z0-9]+$/.test(gameId)) {
+            console.warn(`[Security Warning] Invalid gameId detected and skipped: ${gameId}`);
+            continue;
+        }
+
         const savePath = path.join(REPLAY_DIR, `game_${gameId}.json`);
         
         // Skip if we already downloaded it (good for resuming if the script crashes)

@@ -57,6 +57,11 @@ print("Connecting to OpenFront Mainframe...\n")
 success_count = 0
 
 for code in found_codes:
+    # Security check: Ensure code is only alphanumeric to prevent path traversal
+    if not re.match(r'^[a-zA-Z0-9]+$', code):
+        print(f"[SECURITY WARNING] Invalid code detected and skipped: {code}")
+        continue
+
     target_url = f"https://api.openfront.io/game/{code}"
     save_path = os.path.join(SAVE_DIR, f"game_{code}.json")
 
