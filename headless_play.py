@@ -4,16 +4,19 @@ import numpy as np
 import asyncio
 import websockets
 import json
+import sys
 
-# 1. THE BRAIN (Exact architecture from your Colab training)
+# --- SETTINGS ---
+BOT_NAME = "AI_Omni_Bot"
+AUTH_COOKIE = "PASTE_YOUR_COOKIE_HERE" # Update this from DevTools
+
+# 1. THE BRAIN
 class OpenFrontBot(nn.Module):
     def __init__(self):
         super(OpenFrontBot, self).__init__()
         self.encoder = nn.Sequential(
-            nn.Conv2d(6, 32, 3, padding=1), nn.ReLU(),
-            nn.MaxPool2d(2),
-            nn.Conv2d(32, 64, 3, padding=1), nn.ReLU(),
-            nn.MaxPool2d(2),
+            nn.Conv2d(6, 32, 3, padding=1), nn.ReLU(), nn.MaxPool2d(2),
+            nn.Conv2d(32, 64, 3, padding=1), nn.ReLU(), nn.MaxPool2d(2),
             nn.Conv2d(64, 128, 3, padding=1), nn.ReLU(),
         )
         self.spatial_head = nn.Sequential(
@@ -22,10 +25,8 @@ class OpenFrontBot(nn.Module):
             nn.Conv2d(32, 1, 1) 
         )
         self.ratio_head = nn.Sequential(
-            nn.AdaptiveAvgPool2d(1),
-            nn.Flatten(),
-            nn.Linear(128, 64), nn.ReLU(),
-            nn.Linear(64, 1)
+            nn.AdaptiveAvgPool2d(1), nn.Flatten(),
+            nn.Linear(128, 64), nn.ReLU(), nn.Linear(64, 1)
         )
 
     def forward(self, x):
@@ -34,81 +35,75 @@ class OpenFrontBot(nn.Module):
         ratio = self.ratio_head(feat)
         return spatial, ratio
 
-# 2. THE BOT'S INTERNAL MENTAL MAP
-# Layers: 0: Terrain, 1: My Land, 2: Enemy Land, 3-5: Troops/Details
-mental_map = np.zeros((6, 256, 512), dtype=np.uint8)
-my_client_id = None
+# 2. THE ENGINE
+class GameEngine:
+    def __init__(self):
+        self.tile_modulo = 131072
+        self.width = 512
+        self.mental_map = np.zeros((6, 256, 512), dtype=np.uint8)
+        self.client_id = None
 
-def process_intent(intent):
-    """Updates the internal map based on server intents"""
-    # APPLY THE COORDINATE FIX FROM TRAINING
-    raw_tile = intent.get("tile")
-    if raw_tile is None: return
-    
-    fixed_tile = raw_tile % 131072 #
-    y = fixed_tile // 512
-    x = fixed_tile % 512
+    def setup(self, size_type):
+        if size_type == "Normal": self.tile_modulo, self.width = 131072, 512
+        elif size_type == "Small": self.tile_modulo, self.width = 65536, 256
+        print(f"🗺️ Map Configured: {size_type}")
 
-    if intent["type"] == "spawn":
-        client_id = intent["clientId"]
-        if client_id == my_client_id:
-            mental_map[1, y, x] = 255 # My Land
-        else:
-            mental_map[2, y, x] = 255 # Enemy Land
-
-async def run_bot():
-    global my_client_id
-    
-    # Load the Brain
-    bot = OpenFrontBot()
-    bot.load_state_dict(torch.load("openfront_pro_v1.pth", map_location='cpu'))
-    bot.eval()
-    print("✅ Brain loaded and ready.")
-
-    # URL from your network logs
-    uri = "wss://openfront.io/w17" 
-    
-    async with websockets.connect(uri) as ws:
-        print("✅ Headless Connection established!")
-
+# 3. DISCOVERY LOGIC
+async def discover_match(target_id=None):
+    """If target_id is None, it grabs the first public game. Otherwise, it hunts for that ID."""
+    print("📡 Connecting to Lobby...")
+    async with websockets.connect("wss://openfront.io/lobbies") as ws:
         async for message in ws:
             data = json.loads(message)
+            if "games" in data:
+                for mode in data["games"]:
+                    for game in data["games"][mode]:
+                        # MULTIPLAYER AUTO-JOIN
+                        if target_id is None and game.get('playerCount', 0) < game.get('maxPlayers', 8):
+                            print(f"🚀 Public Game Found! Joining {game['gameID']} on {game['worker']}")
+                            return game['worker'], game['gameID']
+                        # SOLO/MANUAL JOIN
+                        elif target_id and game['gameID'] == target_id:
+                            print(f"🎯 Target Solo Match Found! Joining {target_id}")
+                            return game['worker'], game['gameID']
+            await asyncio.sleep(0.5)
 
-            # Look for your own ClientID in initial packets
-            if "clientId" in data and my_client_id is None:
-                my_client_id = data["clientId"]
-                print(f"📡 My Client ID is: {my_client_id}")
+# 4. PLAY LOOP
+async def play(worker, game_id):
+    bot = OpenFrontBot()
+    bot.load_state_dict(torch.load("openfront_pro_v1.pth", map_location='cpu', weights_only=True))
+    bot.eval()
+    engine = GameEngine()
 
-            # Process Turn Packets
+    uri = f"wss://openfront.io/{worker}"
+    headers = {"Origin": "https://openfront.io", "Cookie": AUTH_COOKIE}
+
+    async with websockets.connect(uri, additional_headers=headers) as ws:
+        await ws.send(json.dumps({"type": "join", "gameID": game_id, "username": BOT_NAME}))
+        
+        async for message in ws:
+            data = json.loads(message)
+            if data.get("type") == "prestart": engine.setup(data.get("gameMapSize", "Normal"))
+            if "clientId" in data: engine.client_id = data["clientId"]
             if data.get("type") == "turn":
-                for intent in data.get("intents", []):
-                    process_intent(intent)
-                
-                # After updating the map, the AI decides its move
-                state_tensor = torch.from_numpy(mental_map).float().unsqueeze(0) / 255.0
-                
+                # Decision Math
+                state = torch.from_numpy(engine.mental_map).float().unsqueeze(0) / 255.0
                 with torch.no_grad():
-                    spatial, ratio = bot(state_tensor)
-                    
-                    # Convert AI output to Target Tile
-                    target_idx = torch.argmax(spatial).item()
-                    # Scale troop count back up (Normalized / 10000 in training)
-                    send_amount = int(ratio.item() * 10000.0)
-
-                # Send Attack Intent back to server
-                attack_packet = {
+                    spatial, ratio = bot(state)
+                    target = torch.argmax(spatial).item() % engine.tile_modulo
+                
+                await ws.send(json.dumps({
                     "type": "intent",
-                    "intent": {
-                        "type": "attack",
-                        "target": target_idx,
-                        "amount": send_amount
-                    }
-                }
-                await ws.send(json.dumps(attack_packet))
-                print(f"🎯 AI Attacking Tile: {target_idx} with {send_amount} troops")
+                    "intent": {"type": "attack", "target": target, "amount": int(ratio.item() * 10000)}
+                }))
 
 if __name__ == "__main__":
-    try:
-        asyncio.run(run_bot())
-    except KeyboardInterrupt:
-        print("Bot stopped.")
+    # Case 1: Manual ID (Solo) -> python headless_play.py abc123def
+    if len(sys.argv) > 1:
+        target = sys.argv[1]
+        w, g = asyncio.run(discover_match(target))
+        asyncio.run(play(w, g))
+    # Case 2: Auto (Multiplayer) -> python headless_play.py
+    else:
+        w, g = asyncio.run(discover_match())
+        asyncio.run(play(w, g))
