@@ -21,8 +21,8 @@ const BOT_UUID     = randomUUID();
 const BOT_USERNAME = 'OpenFrontBot';
 
 const IS_LAND_BIT = 0x80;
-const M_W = 1000;
-const M_H = 500;
+const M_W = 2000;
+const M_H = 1500;
 
 // ─── Helpers ───────────────────────────────────────────────────────────────────
 function simpleHash(str: string): number {
@@ -195,6 +195,9 @@ async function playGame(
 
   return new Promise((resolve) => {
     const ws = new WebSocket(wsUrl);
+    ws.on('error', (err) => {
+      console.error(`[BOT] Immediate socket error on ${wsUrl}:`, err.message);
+    });
 
     let clientID     = '';
     let isSpawned    = false;
