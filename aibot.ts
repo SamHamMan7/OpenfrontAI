@@ -195,6 +195,10 @@ async function playGame(
 
   return new Promise((resolve) => {
     const ws = new WebSocket(wsUrl);
+    ws.on('error', (e) => {
+      console.error('[BOT] WS error:', e.message);
+      ws.close();
+    });
 
     let clientID     = '';
     let isSpawned    = false;
@@ -372,11 +376,6 @@ async function playGame(
       cleanup();
       console.log(`[BOT] Disconnected (${code}) ${reason.toString() || ''}`);
       resolve();
-    });
-
-    ws.on('error', (e) => {
-      console.error('[BOT] WS error:', e.message);
-      ws.close();
     });
   });
 }

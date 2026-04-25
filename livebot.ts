@@ -33,6 +33,7 @@ async function tryJoin(worker: string, session: any) {
     const token = randomUUID();
     let gameID = await new Promise<string>((resolve, reject) => {
         const lobbyWs = new WebSocket(`ws://localhost:9000/${worker}/lobbies`);
+        lobbyWs.on('error', () => reject());
         lobbyWs.on('message', (data) => {
             try {
                 const msg = JSON.parse(data.toString());
@@ -47,7 +48,6 @@ async function tryJoin(worker: string, session: any) {
                 }
             } catch (e) {}
         });
-        lobbyWs.on('error', () => reject());
         setTimeout(() => { lobbyWs.close(); reject(); }, 2000);
     }).catch(() => null);
 
@@ -57,6 +57,9 @@ async function tryJoin(worker: string, session: any) {
     }
 
     const socket = new WebSocket(`ws://localhost:9000/${worker}?token=${token}`);
+    socket.on('error', (err) => {
+        console.error(`[ERROR] Socket error on ${worker}:`, err.message);
+    });
     
     let myId = -1, myCID = "", map: Uint8Array | null = null;
     let joined = false;
@@ -76,10 +79,6 @@ async function tryJoin(worker: string, session: any) {
                 clanTag: null,
                 turnstileToken: null 
             }));
-        });
-
-        socket.on('error', (err) => {
-            console.error(`[ERROR] Socket error on ${worker}:`, err.message);
         });
 
         socket.on('message', async (data: any, isBinary: boolean) => {
