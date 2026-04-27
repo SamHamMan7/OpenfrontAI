@@ -4,8 +4,8 @@ import { randomUUID } from 'crypto';
 
 const WIDTH = 2000;
 const HEIGHT = 1500;
-const M_WIDTH = 1000;
-const M_HEIGHT = 500;
+const M_WIDTH = 2000;
+const M_HEIGHT = 1500;
 
 async function start() {
     const session = await ort.InferenceSession.create('./models/openfront_v2.onnx');
@@ -154,7 +154,15 @@ async function runAI(ws: WebSocket, session: any, map: Uint8Array, id: number, c
             for (let x = 0; x < M_WIDTH; x++) {
                 const tIdx = Math.floor(y * sy) * WIDTH + Math.floor(x * sx);
                 const tile = map[tIdx] || 0;
-                input[y * M_WIDTH + x] = (tile === id) ? 1.0 : (tile === 0 ? 0 : -1.0);
+                if (tile === 0) {
+                    input[y * M_WIDTH + x] = 0.0;
+                } else if (tile === 255) {
+                    input[y * M_WIDTH + x] = 0.2;
+                } else if (tile === id) {
+                    input[y * M_WIDTH + x] = 1.0;
+                } else {
+                    input[y * M_WIDTH + x] = -1.0;
+                }
             }
         }
 
