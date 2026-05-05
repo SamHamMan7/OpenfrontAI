@@ -21,8 +21,8 @@ const BOT_UUID     = randomUUID();
 const BOT_USERNAME = 'OpenFrontBot';
 
 const IS_LAND_BIT = 0x80;
-const M_W = 1000;
-const M_H = 500;
+const M_W = 2000;
+const M_H = 1500;
 
 // ─── Helpers ───────────────────────────────────────────────────────────────────
 function simpleHash(str: string): number {
@@ -135,11 +135,17 @@ async function pickTileONNX(
   for (let my = 0; my < M_H; my++) {
     for (let mx = 0; mx < M_W; mx++) {
       const ref = Math.floor(my * sy) * W + Math.floor(mx * sx);
-      if (!(terrain.terrain[ref] & IS_LAND_BIT)) continue; // water = 0
 
-      if (myTiles.has(ref))          input[my * M_W + mx] =  1.0; // our territory
-      else if (enemyTiles.has(ref))  input[my * M_W + mx] = -1.0; // enemy
-      else                           input[my * M_W + mx] =  0.2; // neutral land
+      let encodedValue = -1.0;
+      if (!(terrain.terrain[ref] & IS_LAND_BIT)) {
+        encodedValue = 0.0;
+      } else if (myTiles.has(ref)) {
+        encodedValue = 1.0;
+      } else if (!enemyTiles.has(ref)) {
+        encodedValue = 0.2;
+      }
+
+      input[my * M_W + mx] = encodedValue;
     }
   }
 
@@ -166,23 +172,26 @@ async function pickTileONNX(
 async function createLobby(numWorkers: number): Promise<{ gameID: string; widx: number }> {
   const gameID = generateID();
   for (let i = 0; i < numWorkers; i++) {
-    const res = await fetch(`${HTTP_BASE}/w${i}/api/create_game/${gameID}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${BOT_UUID}` },
-    });
-    if (res.ok) {
-      console.log(`\n╔════════════════════════════════════════════════════════════╗`);
-      console.log(`║  Lobby created — open in browser:                          ║`);
-      console.log(`║  http://localhost:9000/w${i}/game/${gameID}?lobby           ║`);
-      console.log(`║  Or pass a gameID to join YOUR lobby with custom settings: ║`);
-      console.log(`║  npx tsx aibot.ts <your-game-id>                           ║`);
-      console.log(`╚════════════════════════════════════════════════════════════╝\n`);
-      return { gameID, widx: i };
+    try {
+      const res = await fetch(`${HTTP_BASE}/w${i}/api/create_game/${gameID}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${BOT_UUID}` },
+      });
+      if (res.ok) {
+        console.log(`\n╔════════════════════════════════════════════════════════════╗`);
+        console.log(`║  Lobby created — open in browser:                          ║`);
+        console.log(`║  http://localhost:9000/w${i}/game/${gameID}?lobby           ║`);
+        console.log(`║  Or pass a gameID to join YOUR lobby with custom settings: ║`);
+        console.log(`║  npx tsx aibot.ts <your-game-id>                           ║`);
+        console.log(`╚════════════════════════════════════════════════════════════╝\n`);
+        return { gameID, widx: i };
+      }
+    } catch (e) {
+      console.warn(`[BOT] Could not fetch w${i}:`, e);
     }
   }
   throw new Error('Could not create lobby on any worker');
 }
-
 // ─── Single-connection game session ────────────────────────────────────────────
 async function playGame(
   gameID: string,
@@ -256,7 +265,11 @@ async function playGame(
             // If we are the lobby creator AND there are 2+ players, start
             if (isCreator && clients.length >= 2) {
               console.log('\n[BOT] Player joined — starting game!');
-              await fetch(`${HTTP_BASE}/w${widx}/api/start_game/${gameID}`, { method: 'POST' });
+              try {
+                await fetch(`${HTTP_BASE}/w${widx}/api/start_game/${gameID}`, { method: 'POST' });
+              } catch (e) {
+                console.warn(`[BOT] Start game failed:`, e);
+              }
             }
           }
           break;
