@@ -4,8 +4,8 @@ import { randomUUID } from 'crypto';
 
 const WIDTH = 2000;
 const HEIGHT = 1500;
-const M_WIDTH = 1000;
-const M_HEIGHT = 500;
+const M_WIDTH = 2000;
+const M_HEIGHT = 1500;
 
 async function start() {
     const session = await ort.InferenceSession.create('./models/openfront_v2.onnx');
