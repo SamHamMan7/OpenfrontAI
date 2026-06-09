@@ -14,8 +14,8 @@ const __dirname = path.dirname(__filename);
 
 const REPLAY_DIR = path.join(__dirname, 'pro_replays');
 const TENSOR_DIR = path.join(__dirname, 'extracted_tensors');
-const M_W = 1000;
-const M_H = 500;
+const M_W = 2000;
+const M_H = 1500;
 
 if (!fs.existsSync(TENSOR_DIR)) {
     console.log(`[System] Creating output directory: ${TENSOR_DIR}`);
