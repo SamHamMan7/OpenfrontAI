@@ -21,8 +21,8 @@ const BOT_UUID     = randomUUID();
 const BOT_USERNAME = 'OpenFrontBot';
 
 const IS_LAND_BIT = 0x80;
-const M_W = 1000;
-const M_H = 500;
+const M_W = 2000;
+const M_H = 1500;
 
 // ─── Helpers ───────────────────────────────────────────────────────────────────
 function simpleHash(str: string): number {
@@ -166,10 +166,16 @@ async function pickTileONNX(
 async function createLobby(numWorkers: number): Promise<{ gameID: string; widx: number }> {
   const gameID = generateID();
   for (let i = 0; i < numWorkers; i++) {
-    const res = await fetch(`${HTTP_BASE}/w${i}/api/create_game/${gameID}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${BOT_UUID}` },
-    });
+    let res;
+    try {
+      res = await fetch(`${HTTP_BASE}/w${i}/api/create_game/${gameID}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${BOT_UUID}` },
+      });
+    } catch (e) {
+      console.warn(`[BOT] Failed to create lobby on w${i}:`, e);
+      continue;
+    }
     if (res.ok) {
       console.log(`\n╔════════════════════════════════════════════════════════════╗`);
       console.log(`║  Lobby created — open in browser:                          ║`);
@@ -256,7 +262,11 @@ async function playGame(
             // If we are the lobby creator AND there are 2+ players, start
             if (isCreator && clients.length >= 2) {
               console.log('\n[BOT] Player joined — starting game!');
-              await fetch(`${HTTP_BASE}/w${widx}/api/start_game/${gameID}`, { method: 'POST' });
+              try {
+                await fetch(`${HTTP_BASE}/w${widx}/api/start_game/${gameID}`, { method: 'POST' });
+              } catch (e) {
+                console.warn('[BOT] Failed to start game:', e);
+              }
             }
           }
           break;
