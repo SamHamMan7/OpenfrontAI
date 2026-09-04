@@ -1,13 +1,23 @@
 {
   "name": "openfrontai",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Protocol-correct OpenFront strategy bot with ONNX-assisted spawning and live-stat combat decisions",
+  "main": "aibot.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "bot": "tsx aibot.ts",
+    "bot:legacy-entry": "tsx livebot.ts",
+    "extract": "tsx ReplayExtractor.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "tsx --test tests/*.test.ts",
+    "check": "npm run typecheck && npm test"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "openfront",
+    "ai",
+    "strategy",
+    "onnx"
+  ],
+  "author": "Samuel Gu",
   "license": "ISC",
   "type": "module",
   "dependencies": {

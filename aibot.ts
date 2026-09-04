@@ -1,435 +1,507 @@
 /**
- * OpenFront AI Bot — Direct WebSocket client with ONNX v2.
+ * OpenFrontAI v3 - direct WebSocket bot with protocol-aware transport,
+ * geometry-aware spawning, live-stat strategy, and safe fallbacks.
  *
- * Usage:
- *   npx tsx aibot.ts                  → creates a lobby, prints URL, waits for you
- *   npx tsx aibot.ts <gameID>         → joins YOUR lobby (you host, you pick map/rules)
- *   npx tsx aibot.ts <gameID> <worker> → joins with explicit worker index
+ * Typical usage:
+ *   npm run bot -- <gameID>
+ *   npm run bot -- <gameID> <workerIndex>
  *
- * The bot uses a SINGLE WebSocket connection from lobby through game end.
+ * Environment:
+ *   OPENFRONT_HTTP_BASE=http://localhost:9000
+ *   OPENFRONT_WS_BASE=ws://localhost:9000
+ *   OPENFRONT_SOURCE=../OpenFrontIO      # enables current zbin protocol
+ *   OPENFRONT_PROTOCOL=auto|json|zbin
+ *   OPENFRONT_PLAY_TOKEN=<token-or-dev-persistent-id>
+ *   OPENFRONT_ADMIN_BOT_KEY=<same key as local server> # optional live stats
+ *   OPENFRONT_MODEL=./models/openfront_v2.onnx
  */
 
-import WebSocket from 'ws';
-import * as ort from 'onnxruntime-node';
-import { randomUUID } from 'crypto';
+import { randomUUID } from "node:crypto";
+import WebSocket, { type RawData } from "ws";
+import * as ort from "onnxruntime-node";
+import { createProtocolAdapter, type ProtocolAdapter } from "./src/protocol.js";
+import {
+  chooseSpawnTile,
+  spawnDistanceMap,
+  type ModelHeatmap,
+  type SpawnTerrain,
+} from "./src/spawn.js";
+import {
+  chooseCombatDecision,
+  sanitizeLiveStats,
+  type AggressionRecord,
+  type PlayerSnapshot,
+} from "./src/strategy.js";
 
-// ─── Config ────────────────────────────────────────────────────────────────────
-const SERVER_URL   = 'ws://localhost:9000';
-const HTTP_BASE    = 'http://localhost:9000';
-const NUM_WORKERS  = 3;
-const BOT_UUID     = randomUUID();
-const BOT_USERNAME = 'OpenFrontBot';
+const HTTP_BASE = (process.env.OPENFRONT_HTTP_BASE ?? "http://localhost:9000").replace(/\/$/, "");
+const WS_BASE = (process.env.OPENFRONT_WS_BASE ?? HTTP_BASE.replace(/^http/, "ws")).replace(/\/$/, "");
+const BOT_USERNAME = process.env.OPENFRONT_BOT_NAME ?? "OpenFrontAI-v3";
+const BOT_TOKEN = process.env.OPENFRONT_PLAY_TOKEN ?? randomUUID();
+const ADMIN_KEY = process.env.OPENFRONT_ADMIN_BOT_KEY ?? null;
+const MODEL_PATH = process.env.OPENFRONT_MODEL ?? "./models/openfront_v2.onnx";
+const DEFAULT_WORKERS = Number(process.env.OPENFRONT_NUM_WORKERS ?? 3);
 
+const MODEL_WIDTH = 1000;
+const MODEL_HEIGHT = 500;
 const IS_LAND_BIT = 0x80;
-const M_W = 1000;
-const M_H = 500;
+const SPAWN_WAIT_TURNS = Number(process.env.OPENFRONT_SPAWN_WAIT_TURNS ?? 18);
+const SPAWN_RETRY_TURNS = Number(process.env.OPENFRONT_SPAWN_RETRY_TURNS ?? 35);
+const COMBAT_START_TURN = Number(process.env.OPENFRONT_COMBAT_START_TURN ?? 310);
+const DECISION_EVERY_TURNS = Number(process.env.OPENFRONT_DECISION_EVERY_TURNS ?? 18);
+const NEUTRAL_COOLDOWN_TURNS = Number(process.env.OPENFRONT_NEUTRAL_COOLDOWN_TURNS ?? 55);
+const STATS_REFRESH_TURNS = Number(process.env.OPENFRONT_STATS_REFRESH_TURNS ?? 20);
 
-// ─── Helpers ───────────────────────────────────────────────────────────────────
-function simpleHash(str: string): number {
-  let h = 0;
-  for (let i = 0; i < str.length; i++) { h = (h << 5) - h + str.charCodeAt(i); h = h & h; }
-  return Math.abs(h);
-}
-
-function send(ws: WebSocket, obj: object) {
-  if (ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify(obj));
-}
-
-function generateID(): string {
-  const c = '123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ';
-  return Array.from({ length: 8 }, () => c[Math.floor(Math.random() * c.length)]).join('');
-}
-
-// ─── Server config ─────────────────────────────────────────────────────────────
-async function fetchNumWorkers(): Promise<number> {
-  try {
-    const res = await fetch(`${HTTP_BASE}/api/server_config`);
-    if (!res.ok) return NUM_WORKERS;
-    const data = await res.json() as any;
-    return data.numWorkers ?? NUM_WORKERS;
-  } catch { return NUM_WORKERS; }
-}
-
-// ─── Find which worker owns a gameID ───────────────────────────────────────────
-async function findWorkerForGame(gameID: string, numWorkers: number): Promise<number> {
-  // Try our hash first
-  const guess = simpleHash(gameID) % numWorkers;
-  // Validate by checking the lobby endpoint
-  for (const idx of [guess, ...Array.from({ length: numWorkers }, (_, i) => i).filter(i => i !== guess)]) {
-    try {
-      const res = await fetch(`${HTTP_BASE}/w${idx}/api/game_info/${gameID}`);
-      if (res.ok) return idx;
-    } catch {}
-  }
-  return guess; // fall back
-}
-
-// ─── Terrain loading ───────────────────────────────────────────────────────────
-interface TerrainInfo {
-  terrain: Uint8Array;
-  width: number;
-  height: number;
+interface TerrainInfo extends SpawnTerrain {
   landTiles: number[];
 }
 
-async function loadTerrain(mapName: string): Promise<TerrainInfo | null> {
+interface PlayerInfo {
+  clientID: string;
+  username?: string;
+  teamIndex?: number;
+}
+
+interface BotState {
+  gameID: string;
+  workerIndex: number;
+  myClientID: string | null;
+  roster: Map<string, PlayerInfo>;
+  gameMode: string | null;
+  turn: number;
+  started: boolean;
+  spawned: boolean;
+  mySpawn: number | null;
+  spawns: Map<string, number>;
+  terrain: TerrainInfo | null;
+  modelPrior: ModelHeatmap | null;
+  aggressors: Map<string, AggressionRecord>;
+  lastTargetTurn: Map<string, number>;
+  lastNeutralTurn: number;
+  lastDecisionTurn: number;
+  lastSpawnAttemptTurn: number;
+  lastStatsTurn: number;
+  stats: PlayerSnapshot[] | null;
+  decisionInFlight: boolean;
+}
+
+function send(ws: WebSocket, protocol: ProtocolAdapter, message: unknown): void {
+  if (ws.readyState !== WebSocket.OPEN) return;
+  ws.send(protocol.encode(message));
+}
+
+function workerPath(index: number): string {
+  return `/w${index}`;
+}
+
+async function fetchNumWorkers(): Promise<number> {
   try {
-    const key = mapName.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
-    const [mRes, bRes] = await Promise.all([
-      fetch(`${HTTP_BASE}/maps/${key}/manifest.json`),
-      fetch(`${HTTP_BASE}/maps/${key}/map.bin`),
-    ]);
-    if (!mRes.ok || !bRes.ok) {
-      console.warn(`[BOT] Terrain 404 for "${key}" — trying without spaces...`);
-      // Try alternate: remove all spaces entirely
-      const key2 = mapName.toLowerCase().replace(/\s+/g, '');
-      const [m2, b2] = await Promise.all([
-        fetch(`${HTTP_BASE}/maps/${key2}/manifest.json`),
-        fetch(`${HTTP_BASE}/maps/${key2}/map.bin`),
-      ]);
-      if (!m2.ok || !b2.ok) {
-        console.warn('[BOT] Could not load terrain, using fallback spawn');
-        return null;
+    const response = await fetch(`${HTTP_BASE}/api/server_config`);
+    if (!response.ok) return DEFAULT_WORKERS;
+    const data = (await response.json()) as any;
+    const value = Number(data.numWorkers);
+    return Number.isInteger(value) && value > 0 ? value : DEFAULT_WORKERS;
+  } catch {
+    return DEFAULT_WORKERS;
+  }
+}
+
+async function findWorkerForGame(gameID: string): Promise<number> {
+  const count = await fetchNumWorkers();
+  for (let index = 0; index < count; index++) {
+    for (const route of [
+      `${HTTP_BASE}${workerPath(index)}/api/game/${gameID}`,
+      `${HTTP_BASE}${workerPath(index)}/api/game_info/${gameID}`,
+    ]) {
+      try {
+        const response = await fetch(route);
+        if (response.ok) return index;
+      } catch {
+        // Try the next endpoint/worker.
       }
-      const manifest = await m2.json() as any;
-      const w = manifest.map.width, h = manifest.map.height;
-      const terrain = new Uint8Array(await b2.arrayBuffer());
-      const landTiles = collectLandTiles(terrain, w, h);
-      console.log(`[BOT] Terrain: ${w}×${h}, ${landTiles.length} inland tiles`);
-      return { terrain, width: w, height: h, landTiles };
     }
-    const manifest = await mRes.json() as any;
-    const w = manifest.map.width, h = manifest.map.height;
-    const terrain = new Uint8Array(await bRes.arrayBuffer());
-    const landTiles = collectLandTiles(terrain, w, h);
-    console.log(`[BOT] Terrain: ${w}×${h}, ${landTiles.length} inland tiles`);
-    return { terrain, width: w, height: h, landTiles };
-  } catch (e) {
-    console.warn('[BOT] Terrain load error:', e);
+  }
+  return 0;
+}
+
+function normalizeMapKey(mapName: string): string[] {
+  const snake = mapName.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "");
+  const compact = mapName.toLowerCase().replace(/[^a-z0-9]/g, "");
+  return [...new Set([snake, compact])];
+}
+
+function collectLandTiles(terrain: Uint8Array, width: number, height: number): number[] {
+  const margin = Math.max(4, Math.floor(Math.min(width, height) * 0.02));
+  const result: number[] = [];
+  for (let y = margin; y < height - margin; y++) {
+    for (let x = margin; x < width - margin; x++) {
+      const ref = y * width + x;
+      if ((terrain[ref] & IS_LAND_BIT) !== 0) result.push(ref);
+    }
+  }
+  return result;
+}
+
+async function loadTerrain(mapName: string): Promise<TerrainInfo | null> {
+  for (const key of normalizeMapKey(mapName)) {
+    try {
+      const [manifestResponse, mapResponse] = await Promise.all([
+        fetch(`${HTTP_BASE}/maps/${key}/manifest.json`),
+        fetch(`${HTTP_BASE}/maps/${key}/map.bin`),
+      ]);
+      if (!manifestResponse.ok || !mapResponse.ok) continue;
+      const manifest = (await manifestResponse.json()) as any;
+      const width = Number(manifest?.map?.width);
+      const height = Number(manifest?.map?.height);
+      if (!Number.isInteger(width) || !Number.isInteger(height) || width <= 0 || height <= 0) continue;
+      const terrain = new Uint8Array(await mapResponse.arrayBuffer());
+      if (terrain.length < width * height) continue;
+      const landTiles = collectLandTiles(terrain, width, height);
+      console.log(`[MAP] ${mapName}: ${width}x${height}, ${landTiles.length} candidate land tiles`);
+      return { terrain, width, height, landTiles, landBit: IS_LAND_BIT };
+    } catch {
+      // Try alternate key.
+    }
+  }
+  console.warn(`[MAP] Could not load terrain for ${mapName}`);
+  return null;
+}
+
+async function loadModel(): Promise<ort.InferenceSession | null> {
+  try {
+    const session = await ort.InferenceSession.create(MODEL_PATH);
+    console.log(`[MODEL] Loaded ${MODEL_PATH}; using it as a spawn prior only`);
+    return session;
+  } catch (error) {
+    console.warn(`[MODEL] Optional model unavailable; geometry spawn remains active: ${String(error)}`);
     return null;
   }
 }
 
-function collectLandTiles(terrain: Uint8Array, w: number, h: number): number[] {
-  const margin = Math.max(10, Math.floor(Math.min(w, h) * 0.05));
-  const tiles: number[] = [];
-  for (let y = margin; y < h - margin; y++) {
-    for (let x = margin; x < w - margin; x++) {
-      if (terrain[y * w + x] & IS_LAND_BIT) tiles.push(y * w + x);
-    }
-  }
-  return tiles;
-}
-
-// ─── ONNX ──────────────────────────────────────────────────────────────────────
-async function pickTileONNX(
-  session: ort.InferenceSession,
+async function buildModelPrior(
+  session: ort.InferenceSession | null,
   terrain: TerrainInfo,
-  enemyTiles: Set<number>,  // tile refs known to be owned by enemies
-  myTiles: Set<number>,     // tile refs known to be ours
-): Promise<number> {
-  const { width: W, height: H, landTiles } = terrain;
-  const sx = W / M_W, sy = H / M_H;
-  const input = new Float32Array(M_W * M_H);
-
-  for (let my = 0; my < M_H; my++) {
-    for (let mx = 0; mx < M_W; mx++) {
-      const ref = Math.floor(my * sy) * W + Math.floor(mx * sx);
-      if (!(terrain.terrain[ref] & IS_LAND_BIT)) continue; // water = 0
-
-      if (myTiles.has(ref))          input[my * M_W + mx] =  1.0; // our territory
-      else if (enemyTiles.has(ref))  input[my * M_W + mx] = -1.0; // enemy
-      else                           input[my * M_W + mx] =  0.2; // neutral land
-    }
-  }
-
-  const result = await session.run({
-    map_state: new ort.Tensor('float32', input, [1, 1, M_H, M_W]),
-  });
-  const heatmap = result.click_heatmap.data as Float32Array;
-
-  // Find the best-scoring inland land tile that we don't already own
-  let best = -Infinity, bestTile = landTiles[Math.floor(landTiles.length / 2)];
-  for (const ref of landTiles) {
-    if (myTiles.has(ref)) continue; // don't spawn on ourselves
-    const mx = Math.floor((ref % W) / sx);
-    const my = Math.floor(Math.floor(ref / W) / sy);
-    if (mx >= 0 && mx < M_W && my >= 0 && my < M_H) {
-      const s = heatmap[my * M_W + mx];
-      if (s > best) { best = s; bestTile = ref; }
-    }
-  }
-  return bestTile;
-}
-
-// ─── Create lobby (only used when no gameID argument given) ────────────────────
-async function createLobby(numWorkers: number): Promise<{ gameID: string; widx: number }> {
-  const gameID = generateID();
-  for (let i = 0; i < numWorkers; i++) {
-    const res = await fetch(`${HTTP_BASE}/w${i}/api/create_game/${gameID}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${BOT_UUID}` },
-    });
-    if (res.ok) {
-      console.log(`\n╔════════════════════════════════════════════════════════════╗`);
-      console.log(`║  Lobby created — open in browser:                          ║`);
-      console.log(`║  http://localhost:9000/w${i}/game/${gameID}?lobby           ║`);
-      console.log(`║  Or pass a gameID to join YOUR lobby with custom settings: ║`);
-      console.log(`║  npx tsx aibot.ts <your-game-id>                           ║`);
-      console.log(`╚════════════════════════════════════════════════════════════╝\n`);
-      return { gameID, widx: i };
-    }
-  }
-  throw new Error('Could not create lobby on any worker');
-}
-
-// ─── Single-connection game session ────────────────────────────────────────────
-async function playGame(
-  gameID: string,
-  widx: number,
-  session: ort.InferenceSession,
-  isCreator: boolean,
-): Promise<void> {
-  const wsUrl = `${SERVER_URL}/w${widx}`;
-  console.log(`[BOT] Connecting to ${wsUrl} for game ${gameID}`);
-
-  return new Promise((resolve) => {
-    const ws = new WebSocket(wsUrl);
-
-    let clientID     = '';
-    let isSpawned    = false;
-    let turnCount    = 0;
-    let terrain: TerrainInfo | null = null;
-    let spawnTile    = -1;
-    let onnxReady    = false;
-    let gameStarted  = false;
-    let spawnAttempt = 0;
-    let pingTimer: ReturnType<typeof setInterval> | null = null;
-
-    // Track known territory from intent acknowledgements
-    const enemyTiles = new Set<number>();
-    const myTiles    = new Set<number>();
-    const knownEnemies = new Set<string>();
-
-    // Expand a tile into a rough region (spawn gives ~20 tile radius)
-    function markRegion(set: Set<number>, tile: number, radius: number) {
-      if (!terrain) return;
-      const cx = tile % terrain.width, cy = Math.floor(tile / terrain.width);
-      for (let dy = -radius; dy <= radius; dy++) {
-        for (let dx = -radius; dx <= radius; dx++) {
-          if (Math.abs(dx) + Math.abs(dy) > radius) continue;
-          const ref = (cy + dy) * terrain.width + (cx + dx);
-          if (ref >= 0 && ref < terrain.terrain.length) set.add(ref);
-        }
+): Promise<ModelHeatmap | null> {
+  if (!session) return null;
+  try {
+    const input = new Float32Array(MODEL_WIDTH * MODEL_HEIGHT);
+    const sx = terrain.width / MODEL_WIDTH;
+    const sy = terrain.height / MODEL_HEIGHT;
+    for (let y = 0; y < MODEL_HEIGHT; y++) {
+      for (let x = 0; x < MODEL_WIDTH; x++) {
+        const ref = Math.min(terrain.terrain.length - 1, Math.floor(y * sy) * terrain.width + Math.floor(x * sx));
+        input[y * MODEL_WIDTH + x] = (terrain.terrain[ref] & IS_LAND_BIT) !== 0 ? 0.2 : 0;
       }
     }
-
-    const cleanup = () => { if (pingTimer) clearInterval(pingTimer); };
-
-    // ── open ────────────────────────────────────────────────────────────────
-    ws.on('open', () => {
-      console.log('[BOT] Connected — sending join');
-      send(ws, {
-        type: 'join', gameID, token: BOT_UUID,
-        username: BOT_USERNAME, clanTag: null, turnstileToken: null,
-      });
-      pingTimer = setInterval(() => send(ws, { type: 'ping' }), 5000);
+    const result = await session.run({
+      map_state: new ort.Tensor("float32", input, [1, 1, MODEL_HEIGHT, MODEL_WIDTH]),
     });
-
-    // ── message (single handler for entire lifecycle) ────────────────────────
-    ws.on('message', async (data: Buffer) => {
-      let msg: any;
-      try { msg = JSON.parse(data.toString()); } catch { return; }
-
-      if (msg.myClientID && !clientID) {
-        clientID = msg.myClientID;
-        console.log(`[BOT] clientID = ${clientID}`);
-      }
-
-      switch (msg.type) {
-
-        // ── LOBBY PHASE ──────────────────────────────────────────────────
-        case 'lobby_info': {
-          const clients: any[] = msg.lobby?.clients ?? [];
-          if (!gameStarted) {
-            process.stdout.write(`\r[BOT] Lobby: ${clients.length} player(s)    `);
-            // If we are the lobby creator AND there are 2+ players, start
-            if (isCreator && clients.length >= 2) {
-              console.log('\n[BOT] Player joined — starting game!');
-              await fetch(`${HTTP_BASE}/w${widx}/api/start_game/${gameID}`, { method: 'POST' });
-            }
-          }
-          break;
-        }
-
-        // ── PRESTART ─────────────────────────────────────────────────────
-        case 'prestart': {
-          const mapName: string = msg.gameMap ?? '';
-          console.log(`\n[BOT] Prestart — map: "${mapName}"`);
-          const t = await loadTerrain(mapName);
-          if (t) {
-            terrain = t;
-            try {
-              spawnTile = await pickTileONNX(session, terrain, enemyTiles, myTiles);
-              onnxReady = true;
-              const x = spawnTile % terrain.width;
-              const y = Math.floor(spawnTile / terrain.width);
-              console.log(`[AI] ONNX spawn → tile ${spawnTile} (${x}, ${y})`);
-            } catch (e) {
-              console.error('[AI] ONNX error:', e);
-              spawnTile = terrain.landTiles[Math.floor(terrain.landTiles.length / 2)];
-            }
-          }
-          break;
-        }
-
-        // ── START ────────────────────────────────────────────────────────
-        case 'start': {
-          gameStarted = true;
-          isSpawned   = false;
-          spawnAttempt = 0;
-          const players = msg.gameStartInfo?.players ?? [];
-          console.log(`[BOT] Game STARTED — ${players.length} players: ${players.map((p: any) => p.username).join(', ')}`);
-
-          // Immediately send spawn
-          if (spawnTile < 0 && terrain) {
-            spawnTile = terrain.landTiles[Math.floor(terrain.landTiles.length / 2)];
-          }
-          if (spawnTile >= 0) {
-            send(ws, { type: 'intent', intent: { type: 'spawn', tile: spawnTile } });
-            console.log(`[AI] Spawn sent → tile ${spawnTile}`);
-          }
-          break;
-        }
-
-        // ── TURN ─────────────────────────────────────────────────────────
-        case 'turn': {
-          turnCount = msg.turn?.turnNumber ?? turnCount + 1;
-
-          // Track ALL spawn intents from this turn
-          if (Array.isArray(msg.turn?.intents)) {
-            for (const intent of msg.turn.intents) {
-              if (intent.type === 'spawn' && intent.tile != null) {
-                if (intent.clientID === clientID) {
-                  if (!isSpawned) {
-                    isSpawned = true;
-                    console.log(`[BOT] ✓ SPAWNED on turn ${turnCount}`);
-                  }
-                  markRegion(myTiles, intent.tile, 15);
-                } else {
-                  // Enemy spawned — mark their region
-                  markRegion(enemyTiles, intent.tile, 15);
-                  if (intent.clientID) knownEnemies.add(intent.clientID);
-                  console.log(`[BOT] Enemy spawned at tile ${intent.tile}`);
-                }
-              }
-            }
-          }
-
-          if (!clientID) break;
-
-          // ── Spawn phase ──────────────────────────────────────────────
-          if (!isSpawned) {
-            // Re-run ONNX every 30 turns with updated enemy positions
-            if (turnCount % 30 === 0 && terrain && enemyTiles.size > 0) {
-              try {
-                spawnTile = await pickTileONNX(session, terrain, enemyTiles, myTiles);
-                console.log(`[AI] Re-evaluated spawn → tile ${spawnTile} (enemies: ${enemyTiles.size} tiles)`);
-              } catch {}
-            }
-            // Rotate randomly every 20 turns as fallback
-            if (turnCount % 20 === 0 && terrain && spawnTile < 0) {
-              spawnAttempt++;
-              spawnTile = terrain.landTiles[Math.floor(Math.random() * terrain.landTiles.length)];
-              console.log(`[AI] Random spawn tile ${spawnTile} (attempt ${spawnAttempt})`);
-            }
-            if (spawnTile >= 0) {
-              send(ws, { type: 'intent', intent: { type: 'spawn', tile: spawnTile } });
-            }
-            break;
-          }
-
-          // ── Combat phase ─────────────────────────────────────────────
-          if (turnCount % 3 === 0) {
-            const enemyArr = Array.from(knownEnemies);
-            const target = (Math.random() > 0.5 && enemyArr.length > 0) 
-                           ? enemyArr[Math.floor(Math.random() * enemyArr.length)] 
-                           : null;
-            send(ws, { type: 'intent', intent: { type: 'attack', targetID: target, troops: 0.3 } });
-            if (turnCount % 30 === 0) console.log(`[AI] Attacking (target: ${target ?? 'TerraNullius'}, turn ${turnCount})`);
-          }
-          break;
-        }
-
-        case 'error':
-          console.error(`[BOT] Server: ${msg.error}`);
-          break;
-      }
-    });
-
-    // ── close / error ───────────────────────────────────────────────────────
-    ws.on('close', (code, reason) => {
-      cleanup();
-      console.log(`[BOT] Disconnected (${code}) ${reason.toString() || ''}`);
-      resolve();
-    });
-
-    ws.on('error', (e) => {
-      console.error('[BOT] WS error:', e.message);
-      ws.close();
-    });
-  });
+    const output = result.click_heatmap;
+    if (!output) return null;
+    return {
+      data: output.data as ArrayLike<number>,
+      width: MODEL_WIDTH,
+      height: MODEL_HEIGHT,
+    };
+  } catch (error) {
+    console.warn(`[MODEL] Spawn-prior inference failed; continuing heuristically: ${String(error)}`);
+    return null;
+  }
 }
 
-// ─── Main ──────────────────────────────────────────────────────────────────────
-async function main() {
-  console.log('=== OpenFront AI Bot (WebSocket + ONNX v2) ===');
-  console.log(`ID: ${BOT_UUID}\n`);
+function turnPayload(message: any): { turnNumber: number; intents: any[] } | null {
+  const turn = message?.turn ?? message;
+  if (!turn || !Array.isArray(turn.intents)) return null;
+  const turnNumber = Number(turn.turnNumber);
+  return {
+    turnNumber: Number.isFinite(turnNumber) ? turnNumber : 0,
+    intents: turn.intents,
+  };
+}
 
-  const session = await ort.InferenceSession.create('./models/openfront_v2.onnx');
-  console.log(`[BOT] ONNX loaded — inputs: ${session.inputNames}, outputs: ${session.outputNames}`);
+function recordTurn(state: BotState, turnNumber: number, intents: readonly any[]): void {
+  state.turn = Math.max(state.turn, turnNumber);
+  for (const intent of intents) {
+    if (!intent || typeof intent !== "object") continue;
+    if (intent.type === "spawn" && typeof intent.clientID === "string" && Number.isInteger(intent.tile)) {
+      state.spawns.set(intent.clientID, intent.tile);
+      if (intent.clientID === state.myClientID) {
+        state.spawned = true;
+        state.mySpawn = intent.tile;
+        console.log(`[SPAWN] Accepted at tile ${intent.tile}`);
+      }
+      continue;
+    }
+    if (intent.type === "attack" && typeof intent.clientID === "string") {
+      if (intent.targetID === state.myClientID && intent.clientID !== state.myClientID) {
+        const troops = typeof intent.troops === "number" && Number.isFinite(intent.troops) ? Math.max(0, intent.troops) : 0;
+        const previous = state.aggressors.get(intent.clientID);
+        const combined = previous && turnNumber - previous.turn <= 30 ? previous.troops + troops : troops;
+        state.aggressors.set(intent.clientID, { turn: turnNumber, troops: combined });
+      }
+    }
+  }
+}
 
-  const numWorkers = await fetchNumWorkers();
-  console.log(`[BOT] ${numWorkers} worker(s)\n`);
+function knownHostiles(state: BotState): string[] {
+  if (!state.myClientID) return [];
+  // In FFA everyone else is hostile. In team modes, final team colors are not
+  // present in GameStartInfo, so only live stats can classify friends safely.
+  if ((state.gameMode ?? "").toLowerCase() !== "ffa") return [];
+  return [...state.roster.keys()].filter((id) => id !== state.myClientID);
+}
 
-  process.on('SIGINT', () => { console.log('\n[BOT] Bye.'); process.exit(0); });
-
-  // Parse CLI: npx tsx aibot.ts [gameID] [workerIdx]
-  const cliGameID  = process.argv[2] || '';
-  const cliWorker  = process.argv[3] ? parseInt(process.argv[3]) : -1;
-
-  while (true) {
+async function fetchLiveStats(state: BotState): Promise<PlayerSnapshot[] | null> {
+  if (!ADMIN_KEY) return null;
+  const candidates = [
+    `${HTTP_BASE}${workerPath(state.workerIndex)}/api/adminbot/game/${state.gameID}/stats`,
+    `${HTTP_BASE}/api/adminbot/game/${state.gameID}/stats`,
+  ];
+  for (const url of candidates) {
     try {
-      let gameID: string;
-      let widx: number;
-      let isCreator: boolean;
-
-      if (cliGameID) {
-        // USER-HOSTED: join their lobby
-        gameID    = cliGameID;
-        widx      = cliWorker >= 0 ? cliWorker : await findWorkerForGame(gameID, numWorkers);
-        isCreator = false;
-        console.log(`[BOT] Joining user lobby ${gameID} on w${widx}`);
-      } else {
-        // BOT-HOSTED: create lobby and wait
-        const lobby = await createLobby(numWorkers);
-        gameID    = lobby.gameID;
-        widx      = lobby.widx;
-        isCreator = true;
-      }
-
-      await playGame(gameID, widx, session, isCreator);
-      console.log('[BOT] Game ended — restarting in 2s...\n');
-      await new Promise(r => setTimeout(r, 2000));
-
-      // If user gave a specific gameID, don't loop (that game is done)
-      if (cliGameID) break;
-
-    } catch (e) {
-      console.error('[BOT] Error:', e);
-      await new Promise(r => setTimeout(r, 3000));
+      const response = await fetch(url, {
+        headers: { "x-admin-bot-key": ADMIN_KEY },
+      });
+      if (response.status === 404) continue;
+      if (!response.ok) return null;
+      const data = (await response.json()) as any;
+      return sanitizeLiveStats(data?.liveStats);
+    } catch {
+      // Try the unprefixed route if relevant.
     }
+  }
+  return null;
+}
+
+function spawnTile(state: BotState): number {
+  if (!state.terrain) return -1;
+  const occupied = [...state.spawns.entries()]
+    .filter(([id]) => id !== state.myClientID)
+    .map(([, ref]) => ref);
+  return chooseSpawnTile(state.terrain, {
+    occupiedSpawns: occupied,
+    model: state.modelPrior,
+  });
+}
+
+function maybeSendSpawn(ws: WebSocket, protocol: ProtocolAdapter, state: BotState): void {
+  if (state.spawned || !state.started || !state.terrain) return;
+  if (state.turn < SPAWN_WAIT_TURNS) return;
+  if (state.turn - state.lastSpawnAttemptTurn < SPAWN_RETRY_TURNS) return;
+  const tile = spawnTile(state);
+  if (tile < 0) return;
+  state.lastSpawnAttemptTurn = state.turn;
+  console.log(`[SPAWN] Attempting tile ${tile}; observed ${state.spawns.size} other spawn(s)`);
+  send(ws, protocol, { type: "intent", intent: { type: "spawn", tile } });
+}
+
+async function maybeDecideCombat(
+  ws: WebSocket,
+  protocol: ProtocolAdapter,
+  state: BotState,
+): Promise<void> {
+  if (!state.spawned || state.turn < COMBAT_START_TURN) return;
+  if (state.turn - state.lastDecisionTurn < DECISION_EVERY_TURNS) return;
+  if (state.decisionInFlight) return;
+
+  state.decisionInFlight = true;
+  state.lastDecisionTurn = state.turn;
+  try {
+    if (ADMIN_KEY && state.turn - state.lastStatsTurn >= STATS_REFRESH_TURNS) {
+      const latest = await fetchLiveStats(state);
+      state.lastStatsTurn = state.turn;
+      if (latest) state.stats = latest;
+    }
+
+    const distances =
+      state.terrain && state.mySpawn !== null
+        ? spawnDistanceMap(state.terrain, state.mySpawn, state.spawns)
+        : new Map<string, number>();
+    const canExpandNeutral = state.turn - state.lastNeutralTurn >= NEUTRAL_COOLDOWN_TURNS;
+    const decision = chooseCombatDecision({
+      turn: state.turn,
+      selfID: state.myClientID ?? "",
+      stats: state.stats,
+      knownHostiles: knownHostiles(state),
+      memory: {
+        aggressors: state.aggressors,
+        lastTargetTurn: state.lastTargetTurn,
+        spawnDistance: distances,
+      },
+      canExpandNeutral,
+    });
+
+    if (decision.kind === "hold") {
+      if (state.turn % 180 < DECISION_EVERY_TURNS) {
+        console.log(`[AI] HOLD - ${decision.reason}`);
+      }
+      return;
+    }
+
+    const amountText = decision.troops === null ? "server default" : Math.round(decision.troops).toLocaleString();
+    const targetText = decision.targetID === null ? "neutral" : decision.targetID;
+    console.log(`[AI] ATTACK ${targetText} with ${amountText} - ${decision.reason}`);
+    send(ws, protocol, {
+      type: "intent",
+      intent: {
+        type: "attack",
+        targetID: decision.targetID,
+        troops: decision.troops,
+      },
+    });
+    if (decision.targetID === null) {
+      state.lastNeutralTurn = state.turn;
+    } else {
+      state.lastTargetTurn.set(decision.targetID, state.turn);
+    }
+  } finally {
+    state.decisionInFlight = false;
   }
 }
 
-main();
+async function connect(gameID: string, workerIndex: number): Promise<void> {
+  const protocol = await createProtocolAdapter();
+  const model = await loadModel();
+  const state: BotState = {
+    gameID,
+    workerIndex,
+    myClientID: null,
+    roster: new Map(),
+    gameMode: null,
+    turn: 0,
+    started: false,
+    spawned: false,
+    mySpawn: null,
+    spawns: new Map(),
+    terrain: null,
+    modelPrior: null,
+    aggressors: new Map(),
+    lastTargetTurn: new Map(),
+    lastNeutralTurn: Number.NEGATIVE_INFINITY,
+    lastDecisionTurn: Number.NEGATIVE_INFINITY,
+    lastSpawnAttemptTurn: Number.NEGATIVE_INFINITY,
+    lastStatsTurn: Number.NEGATIVE_INFINITY,
+    stats: null,
+    decisionInFlight: false,
+  };
+
+  const url = `${WS_BASE}${workerPath(workerIndex)}?token=${encodeURIComponent(BOT_TOKEN)}`;
+  console.log(`[NET] Connecting ${BOT_USERNAME} to ${gameID} on worker ${workerIndex} (${protocol.mode})`);
+  const ws = new WebSocket(url);
+
+  ws.on("open", () => {
+    send(ws, protocol, {
+      type: "join",
+      token: BOT_TOKEN,
+      gameID,
+      username: BOT_USERNAME,
+      clanTag: null,
+      turnstileToken: null,
+    });
+  });
+
+  ws.on("message", (raw: RawData) => {
+    void (async () => {
+      let message: any;
+      try {
+        if (typeof raw === "string") {
+          message = protocol.decode(raw);
+        } else if (raw instanceof ArrayBuffer) {
+          message = protocol.decode(raw);
+        } else if (Array.isArray(raw)) {
+          const buffer = Buffer.concat(raw);
+          message = protocol.decode(buffer);
+        } else {
+          message = protocol.decode(raw as Buffer);
+        }
+      } catch (error) {
+        console.error(`[WIRE] Could not decode server frame in ${protocol.mode} mode: ${String(error)}`);
+        return;
+      }
+
+      protocol.observe(message);
+
+      if (message?.type === "ping") {
+        send(ws, protocol, { type: "ping" });
+        return;
+      }
+      if (message?.type === "error") {
+        console.error(`[SERVER] ${message.error ?? message.message ?? "unknown error"}`);
+        return;
+      }
+      if (message?.type === "lobby_info") {
+        state.myClientID = message.myClientID ?? state.myClientID;
+        return;
+      }
+      if (message?.type === "prestart") {
+        const mapName = String(message.gameMap ?? "");
+        if (mapName) {
+          state.terrain = await loadTerrain(mapName);
+          if (state.terrain) state.modelPrior = await buildModelPrior(model, state.terrain);
+        }
+        return;
+      }
+      if (message?.type === "start") {
+        state.started = true;
+        state.myClientID = message.myClientID ?? state.myClientID;
+        const info = message.gameStartInfo ?? {};
+        const players = Array.isArray(info.players) ? info.players : [];
+        for (const player of players) {
+          if (typeof player?.clientID !== "string") continue;
+          state.roster.set(player.clientID, {
+            clientID: player.clientID,
+            username: typeof player.username === "string" ? player.username : undefined,
+            teamIndex: typeof player.teamIndex === "number" ? player.teamIndex : undefined,
+          });
+        }
+        state.gameMode = typeof info?.config?.gameMode === "string" ? info.config.gameMode : null;
+        if (!state.terrain && typeof info?.config?.gameMap === "string") {
+          state.terrain = await loadTerrain(info.config.gameMap);
+          if (state.terrain) state.modelPrior = await buildModelPrior(model, state.terrain);
+        }
+        if (Array.isArray(message.turns)) {
+          for (const missed of message.turns) {
+            if (Array.isArray(missed?.intents)) recordTurn(state, Number(missed.turnNumber ?? 0), missed.intents);
+          }
+        }
+        console.log(`[GAME] Started: ${players.length} player(s), mode ${state.gameMode ?? "unknown"}`);
+        return;
+      }
+      if (message?.type === "turn") {
+        const turn = turnPayload(message);
+        if (!turn) return;
+        recordTurn(state, turn.turnNumber, turn.intents);
+        maybeSendSpawn(ws, protocol, state);
+        await maybeDecideCombat(ws, protocol, state);
+      }
+    })().catch((error) => console.error(`[BOT] Message handler failed: ${String(error)}`));
+  });
+
+  ws.on("close", (code, reason) => {
+    console.log(`[NET] Closed (${code}) ${reason.toString()}`);
+  });
+  ws.on("error", (error) => {
+    console.error(`[NET] WebSocket error: ${String(error)}`);
+  });
+}
+
+async function main(): Promise<void> {
+  const gameID = process.argv[2];
+  const explicitWorker = process.argv[3] === undefined ? null : Number(process.argv[3]);
+
+  if (!gameID) {
+    console.log("OpenFrontAI v3 no longer guesses at creating/starting a lobby.");
+    console.log("Create a private lobby in OpenFront, then run: npm run bot -- <gameID>");
+    console.log("This keeps authentication and lobby ownership in the real client while the bot focuses on play.");
+    return;
+  }
+
+  const workerIndex = Number.isInteger(explicitWorker) && explicitWorker! >= 0
+    ? explicitWorker!
+    : await findWorkerForGame(gameID);
+  await connect(gameID, workerIndex);
+}
+
+void main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});
